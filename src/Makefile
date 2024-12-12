@@ -3,6 +3,7 @@ OUTPUT_FILE = ../Canalotus/Canalotus/
 INTERMEDIATE_FILe = ../Canalotus/intermediate/
 IMG = ../Canalotus/img/
 BOOT = $(OUTPUT_FILE)boot/boot.bin $(OUTPUT_FILE)boot/loader.bin
+FLOPPY = /mnt/floppy/
 
 # compiler
 ASM = nasm
@@ -27,9 +28,9 @@ build: $(BOOT)
 make_image:
 	dd if=/dev/zero of=$(IMG)a.img bs=512 count=2880
 	dd if=$(OUTPUT_FILE)boot/boot.bin of=$(IMG)a.img bs=512 count=1 conv=notrunc
-	sudo mount -o loop $(IMG)a.img /mnt/floppy
-	sudo cp -v $(OUTPUT_FILE)boot/loader.bin /mnt/floppy
-	sudo umount /mnt/floppy/
+	sudo mount -o loop $(IMG)a.img /mnt/floppy/
+	sudo cp -fv $(OUTPUT_FILE)boot/loader.bin $(FLOPPY)
+	sudo umount $(FLOPPY)
 
 # compile
 	@# asm

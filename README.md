@@ -4,10 +4,12 @@
 
 语言：ASM C
 
+编辑器：CLion
+
 编译环境：  
 　　系统：WSL_Ubuntu-24.04  
 　　编译器：nasm-2.16.01  
 　　　　　　gcc-13.2.0  
 　　　　　　ld-2.42
 
-虚拟机：Bochs-2.8
+虚拟机：Bochs-2.8(Windows)

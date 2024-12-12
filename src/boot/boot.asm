@@ -5,6 +5,8 @@ BaseOfLoader equ 0x9000
 OffsetOfLoader equ 0x100
 RootDirSectors equ 14
 SectorNoOfRootDir equ 19
+SectorNoOfFAT1 equ 1
+DeltaSectorNo equ 17
 
 jmp short LABEL_START
 nop
@@ -37,12 +39,22 @@ LABEL_START:
 	mov es, ax
 	mov ss, ax
 	mov sp, BaseOfStack
+
+	; 清屏
+	mov ax, 0x600
+	mov bx, 0x700
+	mov cx, 0
+	mov dx, 0x184F
+	int 0x10
+
+	mov dh, 0
 	call DispStr
+
 	xor ah, ah
 	xor dl, dl
 	int 0x13
 
-; 加载Loader
+; 索引loader.bin
 	mov word [wSectorNo], SectorNoOfRootDir
 LABEL_SEARCH_IN_ROOTDIR_BEGIN:
 	cmp word [wRootDirSizeForLoop], 0
@@ -54,6 +66,7 @@ LABEL_SEARCH_IN_ROOTDIR_BEGIN:
 	mov ax, [wSectorNo]
 	mov cl, 1
 	call ReadSector
+
 	mov si, LoaderFileName
 	mov di, OffsetOfLoader
 	cld
@@ -87,7 +100,44 @@ LABEL_NO_LOADERBIN:
 	call DispStr
 	jmp $
 LABEL_FILE_FOUND:
-	jmp $
+	mov ax, RootDirSectors
+	and di, 0xFFE0
+	add di, 0x1A
+	mov cx, word [es:di]
+	push cx
+	add cx, ax
+	add cx, DeltaSectorNo
+	mov ax, BaseOfLoader
+	mov es, ax
+	mov bx, OffsetOfLoader
+	mov ax, cx
+LABEL_LOAD_FILE:
+	push ax
+	push bx
+	mov ah, 0x0E
+	mov al, '.'
+	mov bl, 0x0F
+	int 0x10
+	pop bx
+	pop ax
+
+	mov cl, 1
+	call ReadSector
+	pop ax
+	call GetFATEntry
+	cmp ax, 0x0FFF
+	jz LABEL_FILE_LOADED
+	push ax
+	mov dx, RootDirSectors
+	add ax, dx
+	add ax, DeltaSectorNo
+	add bx, [BPB_BytePerSec]
+	jmp LABEL_LOAD_FILE
+
+LABEL_FILE_LOADED:
+	mov dh, 1
+	call DispStr
+	jmp BaseOfLoader:OffsetOfLoader
 
 ; 变量
 wRootDirSizeForLoop dw RootDirSectors
@@ -95,11 +145,11 @@ wSectorNo           dw 0
 bOdd                db 0
 LoaderFileName      db "LOADER  BIN", 0
 MsgLen equ 9
-BootMsg db "Booting. "
+BootMsg db "Booting  "
 Msg1    db "Ready.   "
 Msg2    db "NO LOADER"
 
-; DispStr
+; 函数：DispStr
 DispStr:
 	mov ax, MsgLen
 	mul dh
@@ -114,7 +164,7 @@ DispStr:
 	int 0x10
 	ret
 
-; 读扇区
+; 函数：ReadSector
 ReadSector:
 	push bp
 	mov bp, sp
@@ -138,6 +188,45 @@ ReadSector:
 	jc .GoOnReading
 	add esp, 2
 	pop bp
+	ret
+
+; 函数：GetFATEntry
+GetFATEntry:
+	push es
+	push bx
+	push ax
+	mov ax, BaseOfLoader
+	sub ax, 0x100
+	mov es, ax
+	pop ax
+	mov byte [bOdd], 0
+	mov bx, 3
+	mul bx
+	mov bx, 2
+	div bx
+	cmp dx, 0
+	jz LABEL_EVEN
+	mov byte [bOdd], 1
+LABEL_EVEN:
+	xor dx, dx
+	mov bx, [BPB_BytePerSec]
+	div bx
+	push dx
+	mov bx, 0
+	add ax, SectorNoOfFAT1
+	mov cl, 2
+	call ReadSector
+	pop dx
+	add bx, dx
+	mov ax, [es:bx]
+	cmp byte [bOdd], 1
+	jnz LABEL_EVEN_2
+	shr ax, 4
+LABEL_EVEN_2:
+	and ax, 0xFFF
+LABEL_GET_FAT_ENTRY_OK:
+	pop bx
+	pop es
 	ret
 
 times 510 - ($ - $$) db 0
