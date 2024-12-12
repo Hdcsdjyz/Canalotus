@@ -1,15 +1,13 @@
-org 0x7C00
+org 0x100
 
-BaseOfStack equ 0x7C00
-BaseOfLoader equ 0x9000
-OffsetOfLoader equ 0x100
+BaseOfStack equ 0x100
+BaseOfKernel equ 0x8000 ; kernel.bin被加载的段地址
+OffsetOfKernel equ 0x0  ; kernel.bin被加载的偏移量
 
-jmp short LABEL_START
-nop
+jmp LABEL_START
 
 %include "FAT12head.inc"
 
-; Boot
 LABEL_START:
 	mov ax, cs
 	mov ds, ax
@@ -17,37 +15,31 @@ LABEL_START:
 	mov ss, ax
 	mov sp, BaseOfStack
 
-	; 清屏
-	mov ax, 0x600
-	mov bx, 0x700
-	mov cx, 0
-	mov dx, 0x184F
-	int 0x10
-
 	mov dh, 0
 	call DispStr
 
-; 索引loader.bin
+; 索引kernel.bin
+; 与boot.asm中几乎一致
+	mov word [wSectorNo], SectorNoOfRootDir
 	xor ah, ah
 	xor dl, dl
 	int 0x13
-	mov word [wSectorNo], SectorNoOfRootDir
 LABEL_SEARCH_IN_ROOTDIR_BEGIN:
 	cmp word [wRootDirSizeForLoop], 0
-	jz LABEL_NO_LOADERBIN
+	jz LABEL_NO_KERNELBIN
 	dec word [wRootDirSizeForLoop]
-	mov ax, BaseOfLoader
+	mov ax, BaseOfKernel
 	mov es, ax
-	mov bx, OffsetOfLoader
+	mov bx, OffsetOfKernel
 	mov ax, [wSectorNo]
 	mov cl, 1
 	call ReadSector
 
-	mov si, LoaderFileName
-	mov di, OffsetOfLoader
+	mov si, KernelFileName
+	mov di, OffsetOfKernel
 	cld
 	mov dx, 0x10
-LABEL_SEARCH_FOR_LOADERBIN:
+LABEL_SEARCH_FOR_KERNELBIN:
 	cmp dx, 0
 	jz LABEL_GOTO_NEXT_SECTOR_IN_ROOTDIR
 	dec dx
@@ -66,26 +58,30 @@ LABEL_GO_ON:
 LABEL_DIFFERENT:
 	and di, 0xFFE0
 	add di, 0x20
-	mov si, LoaderFileName
-	jmp LABEL_SEARCH_FOR_LOADERBIN
+	mov si, KernelFileName
+	jmp LABEL_SEARCH_FOR_KERNELBIN
 LABEL_GOTO_NEXT_SECTOR_IN_ROOTDIR:
 	add word [wSectorNo], 1
 	jmp LABEL_SEARCH_IN_ROOTDIR_BEGIN
-LABEL_NO_LOADERBIN:
+LABEL_NO_KERNELBIN:
 	mov dh, 2
 	call DispStr
 	jmp $
 LABEL_FILE_FOUND:
 	mov ax, RootDirSectors
 	and di, 0xFFE0
+	push eax
+	mov eax, [es:di + 0x1C]
+	mov dword [dwKernelSize], eax
+	pop eax
 	add di, 0x1A
 	mov cx, word [es:di]
 	push cx
 	add cx, ax
 	add cx, DeltaSectorNo
-	mov ax, BaseOfLoader
+	mov ax, BaseOfKernel
 	mov es, ax
-	mov bx, OffsetOfLoader
+	mov bx, OffsetOfKernel
 	mov ax, cx
 LABEL_LOAD_FILE:
 	push ax
@@ -111,25 +107,16 @@ LABEL_LOAD_FILE:
 	jmp LABEL_LOAD_FILE
 
 LABEL_FILE_LOADED:
+	call KillMotor
 	mov dh, 1
 	call DispStr
-	jmp BaseOfLoader:OffsetOfLoader
-
-; 变量
-wRootDirSizeForLoop dw RootDirSectors
-wSectorNo           dw 0
-bOdd                db 0
-LoaderFileName      db "LOADER  BIN", 0
-MsgLen equ 9
-BootMsg db "Booting  "
-Msg1    db "Ready.   "
-Msg2    db "NO LOADER"
+	jmp $
 
 ; 函数：DispStr
 DispStr:
 	mov ax, MsgLen
 	mul dh
-	add ax, BootMsg
+	add ax, Msg0
 	mov bp, ax
 	mov ax, ds
 	mov es, ax
@@ -137,8 +124,20 @@ DispStr:
 	mov ax, 0x1301
 	mov bx, 0x0007
 	mov dl, 0
+	add dh, 3
 	int 0x10
 	ret
+
+; 变量
+wRootDirSizeForLoop dw RootDirSectors
+wSectorNo           dw 0
+bOdd                db 0
+dwKernelSize        dd 0
+KernelFileName      db "KERNEL  BIN", 0
+MsgLen equ 9
+Msg0    db "Loading  "
+Msg1    db "Ready.   "
+Msg2    db "NO Kernel"
 
 ; 函数：ReadSector
 ; 读取扇区
@@ -172,7 +171,7 @@ GetFATEntry:
 	push es
 	push bx
 	push ax
-	mov ax, BaseOfLoader
+	mov ax, BaseOfKernel
 	sub ax, 0x100
 	mov es, ax
 	pop ax
@@ -206,5 +205,11 @@ LABEL_GET_FAT_ENTRY_OK:
 	pop es
 	ret
 
-times 510 - ($ - $$) db 0
-dw 0xAA55
+; 关闭软驱马达
+KillMotor:
+	push dx
+	mov dx, 0x3F2
+	mov al, 0
+	out dx, al
+	pop dx
+	ret
