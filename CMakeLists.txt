@@ -8,4 +8,4 @@ set(CMAKE_ASM_NASM_FLAGS "-o boot/$(SOURCE_NAME)")
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_FLAGS "-c -nostdlib")
 
-add_executable(Canalotus src/boot/boot.asm)
+add_executable(Canalotus boot/boot.asm boot/loader.asm)
