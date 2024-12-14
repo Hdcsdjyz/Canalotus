@@ -11,7 +11,7 @@ ASM = nasm
 LD = ld
 
 # 编译器&链接器参数
-LD_FLAGS = -s -m elf_i386
+LD_FLAGS = -s -m elf_i386 -Ttext 0x30400
 
 # make选项
 .PHONY: default delete_file make_file build make_image

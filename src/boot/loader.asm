@@ -22,8 +22,6 @@ Selector_FlatRW     equ LABEL_DESC_FLAT_RW - LABEL_GDT
 Selector_Video      equ LABEL_DESC_VIDEO - LABEL_GDT + SA_RPL3
 
 BaseOfStack equ 0x100   ; 栈底地址
-PageDirBase equ 0x100000 ; 页目录地址
-PageTblBase equ 0x101000 ; 页表地址
 
 LABEL_START:
 	mov ax, cs
@@ -283,7 +281,10 @@ LABEL_PM_START:
 	mov ah, 0x0F
 	mov al, 'P'
 	mov [gs:((80 * 0 + 39) * 2)], ax
-	jmp $
+
+	call InitKernel
+
+	jmp Selector_FlatC:KernelEntryPhyAddr
 
 %include "include/lib.inc"
 
@@ -370,6 +371,30 @@ SetupPaging:
 .3:
 	nop
 	ret
+
+InitKernel:
+	xor esi, esi
+	mov cx, word [BaseOfKernelPhyAddr + 0x2C]
+	movzx ecx, cx
+	mov esi, [BaseOfKernelPhyAddr + 0x1C]
+	add esi, BaseOfKernelPhyAddr
+.Begin:
+	mov eax, [esi + 0]
+	cmp eax, 0
+	jz .NoAction
+	push dword [esi + 0x10]
+	mov eax, [esi + 0x04]
+	add eax, BaseOfKernelPhyAddr
+	push eax
+	push dword [esi + 0x08]
+	call MemCpy
+	add esp, 12
+.NoAction:
+	add esi, 0x20
+	dec ecx
+	jnz .Begin
+	ret
+
 
 [SECTION .data1]
 ALIGN 32
