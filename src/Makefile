@@ -6,8 +6,13 @@ BOOT = $(OUTPUT_FILE)boot/boot.bin $(OUTPUT_FILE)boot/loader.bin
 KERNEL = $(OUTPUT_FILE)boot/kernel.bin
 FLOPPY = /mnt/floppy/
 
+OBJ = $(INTERMEDIATE_FILE)boot/kernel.o\
+	  $(INTERMEDIATE_FILE)kernel/string.o\
+	  $(INTERMEDIATE_FILE)kernel/start.o\
+
 # 编译器&链接器
 ASM = nasm
+C = gcc
 LD = ld
 
 # 编译器&链接器参数
@@ -25,8 +30,10 @@ make_file:
 	mkdir -p -m 700 ../Canalotus
 	mkdir -p -m 700 ../Canalotus/Canalotus
 	mkdir -p -m 700 ../Canalotus/Canalotus/boot
+	mkdir -p -m 700 ../Canalotus/Canalotus/kernel
 	mkdir -p -m 700 ../Canalotus/intermediate
 	mkdir -p -m 700 ../Canalotus/intermediate/boot
+	mkdir -p -m 700 ../Canalotus/intermediate/kernel
 	mkdir -p -m 700 ../Canalotus/img
 
 build: $(BOOT) $(KERNEL)
@@ -47,7 +54,14 @@ $(OUTPUT_FILE)boot/boot.bin: boot/boot.asm
 $(OUTPUT_FILE)boot/loader.bin: boot/loader.asm
 	$(ASM) -I boot $< -o $@
 
-$(OUTPUT_FILE)boot/kernel.bin: boot/kernel.asm
-	$(ASM) -f elf $< -o $(INTERMEDIATE_FILE)boot/kernel.o
-	$(LD) $(LD_FLAGS) -o $@ $(INTERMEDIATE_FILE)boot/kernel.o
+$(INTERMEDIATE_FILE)kernel/string.o: kernel/string.asm
+	$(ASM) -f elf $< -o $@
 
+$(INTERMEDIATE_FILE)kernel/start.o: kernel/start.c
+	$(C) -c -m32 -fno-builtin -o $@ $<
+
+$(INTERMEDIATE_FILE)boot/kernel.o: boot/kernel.asm
+	$(ASM) -f elf -o $@ $<
+
+$(KERNEL): $(OBJ)
+	$(LD) $(LD_FLAGS) -o $@ $(OBJ)
