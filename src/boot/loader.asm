@@ -1,12 +1,29 @@
 org 0x100
-
-BaseOfStack equ 0x100
-BaseOfKernel equ 0x8000 ; kernel.bin被加载的段地址
-OffsetOfKernel equ 0x0  ; kernel.bin被加载的偏移量
-
 jmp LABEL_START
+nop
 
-%include "FAT12head.inc"
+%include "include/FAT12header.inc"
+%include "include/macro.inc"
+%include "include/load.inc"
+
+; GDT
+LABEL_GDT:          Descriptor 0,           0,          0
+LABEL_DESC_FLAT_C:  Descriptor 0,           0xFFFFF,    DA_CR | DA_32 | DA_LIMIT_4K
+LABEL_DESC_FLAT_RW: Descriptor 0,           0xFFFFF,    DA_DRW | DA_32 | DA_LIMIT_4K
+LABEL_DESC_VIDEO:   Descriptor 0xB8000,     0xFFFF,     DA_DRW | DA_DPL3
+
+GdtLen equ $ - LABEL_GDT
+GdtPtr dw GdtLen - 1
+	   dd BaseOfLoaderPhyAddr + LABEL_GDT
+
+; GDT选择子
+Selector_FlatC      equ LABEL_DESC_FLAT_C - LABEL_GDT
+Selector_FlatRW     equ LABEL_DESC_FLAT_RW - LABEL_GDT
+Selector_Video      equ LABEL_DESC_VIDEO - LABEL_GDT + SA_RPL3
+
+BaseOfStack equ 0x100   ; 栈底地址
+PageDirBase equ 0x100000 ; 页目录地址
+PageTblBase equ 0x101000 ; 页表地址
 
 LABEL_START:
 	mov ax, cs
@@ -16,10 +33,28 @@ LABEL_START:
 	mov sp, BaseOfStack
 
 	mov dh, 0
-	call DispStr
+	call DispStrRealMode
+
+; 获取内存大小
+	mov ebx, 0
+	mov di, _MemChkBuf
+.MemChkLoop:
+	mov eax, 0xE820
+	mov ecx, 20
+	mov edx, 0x534D4150
+	int 0x15
+	jc .MemChkFail
+	add di, 20
+	inc dword [_dwMCRNumber]
+	cmp ebx, 0
+	jne .MemChkLoop
+	jmp .MemChkOK
+.MemChkFail:
+	mov dword [_dwMCRNumber], 0
 
 ; 索引kernel.bin
 ; 与boot.asm中几乎一致
+.MemChkOK:
 	mov word [wSectorNo], SectorNoOfRootDir
 	xor ah, ah
 	xor dl, dl
@@ -65,11 +100,11 @@ LABEL_GOTO_NEXT_SECTOR_IN_ROOTDIR:
 	jmp LABEL_SEARCH_IN_ROOTDIR_BEGIN
 LABEL_NO_KERNELBIN:
 	mov dh, 2
-	call DispStr
+	call DispStrRealMode
 	jmp $
 LABEL_FILE_FOUND:
 	mov ax, RootDirSectors
-	and di, 0xFFE0
+	and di, 0xFFF0
 	push eax
 	mov eax, [es:di + 0x1C]
 	mov dword [dwKernelSize], eax
@@ -109,11 +144,33 @@ LABEL_LOAD_FILE:
 LABEL_FILE_LOADED:
 	call KillMotor
 	mov dh, 1
-	call DispStr
+	call DispStrRealMode
+
+; 进入保护模式
+	lgdt [GdtPtr]
+	cli
+	in al, 0x92
+	or al, 0b00000010
+	out 0x92, al
+	mov eax, cr0
+	or eax, 1
+	mov cr0, eax
+	jmp dword Selector_FlatC:(BaseOfLoaderPhyAddr + LABEL_PM_START)
 	jmp $
 
-; 函数：DispStr
-DispStr:
+; 变量
+wRootDirSizeForLoop dw RootDirSectors
+wSectorNo           dw 0
+bOdd                db 0
+dwKernelSize        dd 0
+KernelFileName      db "KERNEL  BIN", 0
+MsgLen equ 9
+Msg0    db "Loading  "
+Msg1    db "Ready.   "
+Msg2    db "NO Kernel"
+
+; 函数：DispStrRealMode
+DispStrRealMode:
 	mov ax, MsgLen
 	mul dh
 	add ax, Msg0
@@ -127,17 +184,6 @@ DispStr:
 	add dh, 3
 	int 0x10
 	ret
-
-; 变量
-wRootDirSizeForLoop dw RootDirSectors
-wSectorNo           dw 0
-bOdd                db 0
-dwKernelSize        dd 0
-KernelFileName      db "KERNEL  BIN", 0
-MsgLen equ 9
-Msg0    db "Loading  "
-Msg1    db "Ready.   "
-Msg2    db "NO Kernel"
 
 ; 函数：ReadSector
 ; 读取扇区
@@ -199,7 +245,7 @@ LABEL_EVEN:
 	jnz LABEL_EVEN_2
 	shr ax, 4
 LABEL_EVEN_2:
-	and ax, 0xFFF
+	and ax, 0x0FFF
 LABEL_GET_FAT_ENTRY_OK:
 	pop bx
 	pop es
@@ -208,8 +254,159 @@ LABEL_GET_FAT_ENTRY_OK:
 ; 关闭软驱马达
 KillMotor:
 	push dx
-	mov dx, 0x3F2
+	mov dx, 0x03F2
 	mov al, 0
 	out dx, al
 	pop dx
 	ret
+
+[SECTION .s32]
+ALIGN 32
+[BITS 32]
+
+LABEL_PM_START:
+	mov ax, Selector_Video
+	mov gs, ax
+	mov ax, Selector_FlatRW
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov ss, ax
+    mov esp, TopOfStack
+
+; 设置页
+	push szMemChkTitle
+	call DispStr
+	add esp, 4
+	call DispMemInfo
+	call SetupPaging
+	mov ah, 0x0F
+	mov al, 'P'
+	mov [gs:((80 * 0 + 39) * 2)], ax
+	jmp $
+
+%include "include/lib.inc"
+
+; 显示内存信息
+; 依次显示：基地址基地址长度长度类型
+DispMemInfo:
+	push esi
+	push edi
+	push ecx
+	mov esi, MemChkBuf
+	mov ecx, [dwMCRNumber]
+.loop:
+	mov edx, 5
+	mov edi, ARDStruct
+.1:
+	push dword [esi]
+	call DispInt
+	pop eax
+	stosd
+	add esi, 4
+	dec edx
+	cmp edx, 0
+	jnz .1
+	call DispReturn
+	cmp dword [dwType], 1
+	jne .2
+	mov eax, [dwBaseAddrLow]
+	add eax, [dwLengthLow]
+	cmp eax, [dwMemSize]
+	jb .2
+	mov [dwMemSize], eax
+.2:
+	loop .loop
+	call DispReturn
+	push szRAMSize
+	call DispStr
+	add esp, 4
+	push dword [dwMemSize]
+	call DispInt
+	add esp, 4
+	pop ecx
+	pop edi
+	pop esi
+	ret
+
+; 启动并设置分页
+SetupPaging:
+	xor edx, edx
+	mov eax, [dwMemSize]
+	mov ebx, 0x400000
+	div ebx
+	mov ecx, eax
+	test edx, edx
+	jz .no_remainder
+	inc ecx
+.no_remainder:
+	push ecx
+	mov ax, Selector_FlatRW
+	mov es, ax
+	mov edi, PageDirBase
+	xor eax, eax
+	mov eax, PageTblBase | PG_P | PG_USU | PG_RWW
+.1:
+	stosd
+	add eax, 4096
+	loop .1
+	pop eax
+	mov ebx, 1024
+	mul ebx
+	mov ecx, eax
+	mov edi, PageTblBase
+	xor eax, eax
+	mov eax, PG_P | PG_USU | PG_RWW
+.2:
+	stosd
+	add eax, 4096
+	loop .2
+	mov eax, PageDirBase
+	mov cr3, eax
+	mov eax, cr0
+	or eax, 0x80000000
+	mov cr0, eax
+	jmp short .3
+.3:
+	nop
+	ret
+
+[SECTION .data1]
+ALIGN 32
+
+LABEL_DATA:
+; 实模式用
+; 字符串
+_szMemChkTitle: db "BaseAddrL BaseAddrH LengthL   LengthH   Type", 0x0A, 0
+_szRAMSize: db "RAM size:", 0
+_szReturn: db 0x0A, 0
+; 变量
+_dwMCRNumber: dd 0
+_dwDispPos: dd (80 * 6 + 0) * 2
+_dwMemSize: dd 0
+_ARDStruct:
+	_dwBaseAddrLow:     dd 0
+	_dwBaseAddrHigh:    dd 0
+	_dwLengthLow:       dd 0
+	_dwLengthHigh:      dd 0
+	_dwType:            dd 0
+_MemChkBuf: times 256 db 0
+
+; 保护模式下用
+szMemChkTitle:  equ BaseOfLoaderPhyAddr + _szMemChkTitle
+szRAMSize:      equ BaseOfLoaderPhyAddr + _szRAMSize
+szReturn:       equ BaseOfLoaderPhyAddr + _szReturn
+dwMCRNumber:    equ BaseOfLoaderPhyAddr + _dwMCRNumber
+dwDispPos:      equ BaseOfLoaderPhyAddr + _dwDispPos
+dwMemSize:      equ BaseOfLoaderPhyAddr + _dwMemSize
+ARDStruct:      equ BaseOfLoaderPhyAddr + _ARDStruct
+	dwBaseAddrLow:      equ BaseOfLoaderPhyAddr + _dwBaseAddrLow
+	dwBaseAddrHigh:     equ BaseOfLoaderPhyAddr + _dwBaseAddrHigh
+	dwLengthLow:        equ BaseOfLoaderPhyAddr + _dwLengthLow
+	dwLengthHigh:       equ BaseOfLoaderPhyAddr + _dwLengthHigh
+	dwType:             equ BaseOfLoaderPhyAddr + _dwType
+MemChkBuf:      equ BaseOfLoaderPhyAddr + _MemChkBuf
+
+; 堆栈区
+StackSpace: times 1024 db 0
+TopOfStack equ BaseOfLoaderPhyAddr + $ ; 栈顶地址

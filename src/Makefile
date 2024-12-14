@@ -1,4 +1,4 @@
-# alias
+# 别名
 OUTPUT_FILE = ../Canalotus/Canalotus/
 INTERMEDIATE_FILE = ../Canalotus/intermediate/
 IMG = ../Canalotus/img/
@@ -6,11 +6,14 @@ BOOT = $(OUTPUT_FILE)boot/boot.bin $(OUTPUT_FILE)boot/loader.bin
 KERNEL = $(OUTPUT_FILE)boot/kernel.bin
 FLOPPY = /mnt/floppy/
 
-# compiler
+# 编译器&链接器
 ASM = nasm
-
 LD = ld
-# .PHONY
+
+# 编译器&链接器参数
+LD_FLAGS = -s -m elf_i386
+
+# make选项
 .PHONY: default delete_file make_file build make_image
 
 default: delete make_file build make_image
@@ -36,16 +39,15 @@ make_image:
 	sudo cp -fv $(OUTPUT_FILE)boot/kernel.bin $(FLOPPY)
 	sudo umount $(FLOPPY)
 
-# compile
+# 编译
 	@# asm
 $(OUTPUT_FILE)boot/boot.bin: boot/boot.asm
-	$(ASM) -I boot -o $@ $<
+	$(ASM) -I boot $< -o $@
 
 $(OUTPUT_FILE)boot/loader.bin: boot/loader.asm
-	$(ASM) -I boot -o $@ $<
+	$(ASM) -I boot $< -o $@
 
-$(INTERMEDIATE_FILE)boot/kernel.o: boot/kernel.asm
-	$(ASM) -f elf $< -o $@
+$(OUTPUT_FILE)boot/kernel.bin: boot/kernel.asm
+	$(ASM) -f elf $< -o $(INTERMEDIATE_FILE)boot/kernel.o
+	$(LD) $(LD_FLAGS) -o $@ $(INTERMEDIATE_FILE)boot/kernel.o
 
-$(KERNEL): $(INTERMEDIATE_FILE)boot/kernel.o
-	$(LD) -s -m elf_i386 -o $@ $<

@@ -1,13 +1,11 @@
 org 0x7C00
-
-BaseOfStack equ 0x7C00
-BaseOfLoader equ 0x9000
-OffsetOfLoader equ 0x100
-
 jmp short LABEL_START
 nop
 
-%include "FAT12head.inc"
+%include "include/FAT12header.inc"
+%include "include/load.inc"
+
+BaseOfStack equ 0x7C00
 
 ; Boot
 LABEL_START:
@@ -18,8 +16,8 @@ LABEL_START:
 	mov sp, BaseOfStack
 
 	; 清屏
-	mov ax, 0x600
-	mov bx, 0x700
+	mov ax, 0x0600
+	mov bx, 0x0700
 	mov cx, 0
 	mov dx, 0x184F
 	int 0x10
@@ -37,7 +35,6 @@ LABEL_SEARCH_IN_ROOTDIR_BEGIN:
 	jz LABEL_NO_LOADERBIN
 	dec word [wRootDirSizeForLoop]
 	mov ax, BaseOfLoader
-	mov es, ax
 	mov bx, OffsetOfLoader
 	mov ax, [wSectorNo]
 	mov cl, 1
@@ -173,7 +170,7 @@ GetFATEntry:
 	push bx
 	push ax
 	mov ax, BaseOfLoader
-	sub ax, 0x100
+	sub ax, 0x0100
 	mov es, ax
 	pop ax
 	mov byte [bOdd], 0
@@ -200,7 +197,7 @@ LABEL_EVEN:
 	jnz LABEL_EVEN_2
 	shr ax, 4
 LABEL_EVEN_2:
-	and ax, 0xFFF
+	and ax, 0x0FFF
 LABEL_GET_FAT_ENTRY_OK:
 	pop bx
 	pop es
