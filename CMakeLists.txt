@@ -10,10 +10,14 @@ set(CMAKE_C_FLAGS "-c -nostdlib")
 
 include_directories(src/boot/include)
 add_executable(Canalotus src/boot/boot.asm src/boot/loader.asm)
+
 add_library(kernel.o OBJECT src/kernel/kernel.asm)
 add_library(start.o OBJECT src/kernel/start.c)
 add_library(string.o OBJECT src/lib/string.asm)
-include(src/kernel/include/type.h)
-include(src/kernel/include/const.h)
-include(src/kernel/include/protect.h)
+add_library(i8259.o OBJECT src/kernel/i8259.c)
+add_library(protect.o OBJECT src/kernel/protect.c)
+add_library(global.o OBJECT src/kernel/global.c)
+add_library(klib.o OBJECT src/lib/klib.c)
+include_directories(src/kernel/include)
+
 

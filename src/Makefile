@@ -8,10 +8,21 @@ BOOT = $(OUTPUT_FILE)boot/boot.bin $(OUTPUT_FILE)boot/loader.bin
 KERNEL = $(OUTPUT_FILE)kernel/kernel.bin
 FLOPPY = /mnt/floppy/
 
-OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
-	  $(INTERMEDIATE_FILE)kernel/string.o\
-	  $(INTERMEDIATE_FILE)kernel/start.o\
-	  $(INTERMEDIATE_FILE)lib/kliba.o\
+INCLUDE_KERNEL = kernel/include/type.h\
+				 kernel/include/const.h\
+				 kernel/include/protect.h\
+				 kernel/include/proto.h\
+				 kernel/include/global.h\
+				 kernel/include/string.h\
+
+OBJ = 	$(INTERMEDIATE_FILE)kernel/kernel.o\
+		$(INTERMEDIATE_FILE)kernel/start.o\
+		$(INTERMEDIATE_FILE)kernel/i8259.o\
+		$(INTERMEDIATE_FILE)kernel/global.o\
+		$(INTERMEDIATE_FILE)kernel/protect.o\
+		$(INTERMEDIATE_FILE)lib/klib.o\
+		$(INTERMEDIATE_FILE)lib/kliba.o\
+		$(INTERMEDIATE_FILE)lib/string.o\
 
 # 编译器&链接器
 ASM = nasm
@@ -19,7 +30,9 @@ C = gcc
 LD = ld
 
 # 编译器&链接器参数
-LD_FLAGS = -s -m elf_i386 -Ttext 0x30400
+C_FLAGS =  -c -m32 -fno-builtin -fno-pic -Wall -fno-stack-protector
+LD_FLAGS = -s -m elf_i386 -Ttext 0x30400 -z noexecstack
+#-z noexecstack
 
 # make选项
 .PHONY: default delete_file make_file build make_image
@@ -35,7 +48,6 @@ make_file:
 	mkdir -p -m 700 ../Canalotus/Canalotus/boot
 	mkdir -p -m 700 ../Canalotus/Canalotus/kernel
 	mkdir -p -m 700 ../Canalotus/intermediate
-	mkdir -p -m 700 ../Canalotus/intermediate/boot
 	mkdir -p -m 700 ../Canalotus/intermediate/kernel
 	mkdir -p -m 700 ../Canalotus/intermediate/lib
 	mkdir -p -m 700 ../Canalotus/img
@@ -57,17 +69,29 @@ $(OUTPUT_FILE)boot/boot.bin: boot/boot.asm
 $(OUTPUT_FILE)boot/loader.bin: boot/loader.asm
 	$(ASM) -I boot $< -o $@
 
-$(INTERMEDIATE_FILE)kernel/string.o: lib/string.asm
+$(INTERMEDIATE_FILE)lib/string.o: lib/string.asm
 	$(ASM) -f elf $< -o $@
 
 $(INTERMEDIATE_FILE)kernel/start.o: kernel/start.c
-	$(C) -c -m32 -fno-builtin -o $@ $<
+	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/kernel.o: kernel/kernel.asm
 	$(ASM) -f elf -o $@ $<
 
 $(INTERMEDIATE_FILE)lib/kliba.o: lib/kliba.asm
 	$(ASM) -f elf -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/i8259.o: kernel/i8259.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/global.o: kernel/global.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)lib/klib.o: lib/klib.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/protect.o: kernel/protect.c
+	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)
 	$(LD) $(LD_FLAGS) -o $@ $(OBJ)

@@ -9,9 +9,6 @@
     <option name="/Default/CodeInspection/GeneratedCode/GeneratedCodeRegions/=Designer_0020generated_0020code/@EntryIndexRemoved" />
     <option name="/Default/CodeInspection/GeneratedCode/GeneratedCodeRegions/=Web_0020Form_0020Designer_0020generated_0020code/@EntryIndexedValue" value="Web Form Designer generated code" type="string" />
     <option name="/Default/CodeInspection/GeneratedCode/GeneratedCodeRegions/=Web_0020Form_0020Designer_0020generated_0020code/@EntryIndexRemoved" />
-    <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/INDENT_STYLE/@EntryValue" value="Tab" type="string" />
-    <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/ALLOW_FAR_ALIGNMENT/@EntryValue" value="true" type="bool" />
-    <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/ALIGNMENT_TAB_FILL_STYLE/@EntryValue" value="OPTIMAL_FILL" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppSmartPointerVsMakeFunction/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppCStyleCast/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppFunctionalStyleCast/@EntryIndexedValue" value="SUGGESTION" type="string" />
@@ -251,6 +248,9 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=StringLiteralTypo/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CommentTypo/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=IdentifierTypo/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
+    <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/INDENT_STYLE/@EntryValue" value="Tab" type="string" />
+    <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/ALLOW_FAR_ALIGNMENT/@EntryValue" value="true" type="bool" />
+    <option name="/Default/CodeStyle/CodeFormatting/CppFormatting/ALIGNMENT_TAB_FILL_STYLE/@EntryValue" value="OPTIMAL_FILL" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppSmartPointerVsMakeFunction/@EntryIndexRemoved" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppCStyleCast/@EntryIndexRemoved" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppFunctionalStyleCast/@EntryIndexRemoved" />
