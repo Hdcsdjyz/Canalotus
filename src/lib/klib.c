@@ -17,7 +17,7 @@ PUBLIC char* itoa(char* str, int num)
 	{
 		for (i = 28; i >= 0; i -= 4)
 		{
-			ch = (num >> i) & 0xF;
+			ch = num >> i & 0xF;
 			if (flag || ch > 0)
 			{
 				flag = 1;
@@ -39,4 +39,19 @@ PUBLIC void disp_int(int input)
 	char output[16];
 	itoa(output, input);
 	disp_str(output);
+}
+
+PUBLIC void delay(int time)
+{
+	int i, j, k;
+	for (k=0; k < time; k++)
+	{
+		for (i=0; i < 10; i++)
+		{
+			for (j=0; j < 10000; j++)
+			{
+
+			}
+		}
+	}
 }

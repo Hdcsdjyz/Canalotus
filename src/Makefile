@@ -20,6 +20,7 @@ OBJ = 	$(INTERMEDIATE_FILE)kernel/kernel.o\
 		$(INTERMEDIATE_FILE)kernel/i8259.o\
 		$(INTERMEDIATE_FILE)kernel/global.o\
 		$(INTERMEDIATE_FILE)kernel/protect.o\
+		$(INTERMEDIATE_FILE)kernel/main.o\
 		$(INTERMEDIATE_FILE)lib/klib.o\
 		$(INTERMEDIATE_FILE)lib/kliba.o\
 		$(INTERMEDIATE_FILE)lib/string.o\
@@ -30,7 +31,7 @@ C = gcc
 LD = ld
 
 # 编译器&链接器参数
-C_FLAGS =  -c -m32 -fno-builtin -fno-pic -Wall -fno-stack-protector
+C_FLAGS =  -c -m32 -nostdinc -fno-builtin -fno-pic -Wall -fno-stack-protector -Wno-parentheses
 LD_FLAGS = -s -m elf_i386 -Ttext 0x30400 -z noexecstack
 #-z noexecstack
 
@@ -76,7 +77,7 @@ $(INTERMEDIATE_FILE)kernel/start.o: kernel/start.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/kernel.o: kernel/kernel.asm
-	$(ASM) -f elf -o $@ $<
+	$(ASM) -f elf -I kernel -o $@ $<
 
 $(INTERMEDIATE_FILE)lib/kliba.o: lib/kliba.asm
 	$(ASM) -f elf -o $@ $<
@@ -91,6 +92,9 @@ $(INTERMEDIATE_FILE)lib/klib.o: lib/klib.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/protect.o: kernel/protect.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/main.o: kernel/main.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

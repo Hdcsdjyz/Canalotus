@@ -5,3 +5,6 @@
 #include "include/proto.h"
 #include "include/const.h"
 #include "include/protect.h"
+#include "include/proc.h"
+
+PUBLIC struct process process_table[NR_TASKS];

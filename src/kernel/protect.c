@@ -1,9 +1,13 @@
 #include "include/global.h"
 #include "include/proto.h"
 #include "include/const.h"
+#include "include/string.h"
 
+/* 本地函数 */
 PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 privilege);
+PRIVATE void init_descriptor(struct descriptor* p_desc, u32 base, u32 limit, u16 attribute);
 
+/* 异常处理程序 */
 PUBLIC void exception_handler(int vec_no, int error_code, int eip, int cs, int eflags)
 {
 	int i;
@@ -88,7 +92,7 @@ void hwint13();
 void hwint14();
 void hwint15();
 
-
+/* 设置中断处理程序、IDT */
 PUBLIC void init_prot()
 {
 	init_8259A();
@@ -125,8 +129,26 @@ PUBLIC void init_prot()
 	init_idt_desc(INT_VECTOR_IRQ0 + 13, DA_386IGate, hwint13, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 14, DA_386IGate, hwint14, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 15, DA_386IGate, hwint15, PRIVILEGE_KRNL);
+
+	/* 初始化TSS */
+	memset(&tss, 0, sizeof(tss));
+	tss.ss0 = SELECTOR_KERNEL_DS;
+	init_descriptor(&gdt[INDEX_TSS], vir2phys(seg2phys(SELECTOR_KERNEL_DS), &tss), sizeof(tss) - 1, DA_386TSS);
+	tss.iomap = sizeof(tss);
+
+	init_descriptor(&gdt[INDEX_LDT_FIRST], vir2phys(seg2phys(SELECTOR_KERNEL_DS), proc_table[0].ldts), LDT_SIZE * sizeof(struct descriptor) - 1, DA_LDT);
 }
 
+/* 由段名求绝对地址 */
+PUBLIC u32 seg2phys(u16 seg)
+{
+	struct descriptor* p_dest = &gdt[seg >> 3];
+	return (p_dest->base_high << 24 | p_dest->base_mid << 16 | p_dest->base_low);
+}
+
+/* 本地函数 */
+
+/* 设置idt */
 PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 privilege)
 {
 	struct gate* p_gate = &idt[vector];
@@ -136,4 +158,16 @@ PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 priv
 	p_gate->dcount = 0;
 	p_gate->attr = desc_type | privilege << 5;
 	p_gate->offset_high = base >> 16 & 0xFFFF;
+}
+
+/* 设置段 */
+PRIVATE void init_descriptor(struct descriptor* p_desc, u32 base, u32 limit, u16 attribute)
+{
+	p_desc->limit_low = limit & 0xFFFF;
+	p_desc->base_low = base & 0xFFFF;
+	p_desc->base_mid = base >> 16 & 0xFF;
+	p_desc->attr1 = attribute & 0xFF;
+	p_desc->limit_high_attr2 = (attribute >> 16 & 0x0F) | (attribute >> 8 & 0xF0);
+	p_desc->base_high = base >> 24 & 0xFF;
+
 }

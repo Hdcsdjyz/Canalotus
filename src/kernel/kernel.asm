@@ -1,14 +1,17 @@
-SELECTOR_KERNEL_CS equ 8
+%include "include/sconst.inc"
 
 ; 导入函数
 extern cstart
 extern exception_handler
 extern spurious_irq
+extern kernel_main
 
 ; 导入变量
 extern gdt_ptr
 extern idt_ptr
 extern disp_pos
+extern tss
+extern p_proc_ready
 
 [SECTION .bss]
 StackSpace resb 2 * 1024
@@ -17,6 +20,7 @@ StackTop:
 [SECTION .text]
 ; 导出函数
 global _start
+global restart
 
 ; 导出变量
 global divide_error_handler
@@ -62,8 +66,10 @@ _start:
 	lidt [idt_ptr]
 	jmp SELECTOR_KERNEL_CS:csinit
 csinit:
-	sti
-	hlt
+	xor eax, eax
+	mov ax, SELECTOR_TSS
+	ltr ax
+	jmp kernel_main
 
 ; 中断
 %macro hwint_master 1
@@ -75,7 +81,7 @@ csinit:
 
 ALIGN 16
 hwint00:
-	hwint_master 0
+	iretd
 ALIGN 16
 hwint01:
 	hwint_master 1
@@ -193,3 +199,17 @@ exception:
 	call exception_handler
 	add esp, 8
 	hlt
+
+restart:
+	mov esp, [p_proc_ready]
+	lldt [esp + P_LDT_SEL]
+	lea eax, [esp + P_STACKTOP]
+	mov dword [tss + TSS3_S_SP0], eax
+
+	pop gs
+	pop fs
+	pop es
+	pop ds
+	popad
+	add esp, 4
+	iretd
