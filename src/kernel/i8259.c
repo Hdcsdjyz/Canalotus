@@ -18,7 +18,7 @@ PUBLIC void init_8259A()
 	out_byte(INT_M_CTLMASK, 0x01);
 	out_byte(INT_S_CTLMASK, 0x01);
 
-	out_byte(INT_M_CTLMASK, 0xFD);
+	out_byte(INT_M_CTLMASK, 0xFE);
 	out_byte(INT_S_CTLMASK, 0xFF);
 }
 

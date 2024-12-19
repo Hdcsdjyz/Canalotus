@@ -5,6 +5,7 @@ extern cstart
 extern exception_handler
 extern spurious_irq
 extern kernel_main
+extern disp_str
 
 ; 导入变量
 extern gdt_ptr
@@ -12,6 +13,10 @@ extern idt_ptr
 extern disp_pos
 extern tss
 extern p_proc_ready
+extern k_reenter
+
+[SECTION .data]
+clock_int_msg db "^", 0
 
 [SECTION .bss]
 StackSpace resb 2 * 1024
@@ -71,7 +76,7 @@ csinit:
 	ltr ax
 	jmp kernel_main
 
-; 中断
+; 默认中断（主）
 %macro hwint_master 1
 	push %1
 	call spurious_irq
@@ -79,9 +84,45 @@ csinit:
 	hlt
 %endmacro
 
+; 时钟中断
 ALIGN 16
 hwint00:
+	sub esp, 4
+	pushad
+	push ds
+	push es
+	push fs
+	push gs
+	mov dx, ss
+	mov ds, dx
+	mov es, dx
+
+	inc byte [gs:0]
+	mov al, EOI
+	out INT_M_CTL, al
+	inc dword [k_reenter]
+	cmp dword [k_reenter], 0
+	jne .re_enter
+
+	mov esp, StackTop
+	sti
+	push clock_int_msg
+	call disp_str
+	add esp, 4
+	cli
+	mov esp, [p_proc_ready]
+	lea eax, [esp + P_STACKTOP]
+	mov dword [tss + TSS3_S_SP0], eax
+.re_enter:
+	dec dword [k_reenter]
+	pop gs
+	pop fs
+	pop es
+	pop ds
+	popad
+	add esp, 4
 	iretd
+
 ALIGN 16
 hwint01:
 	hwint_master 1
@@ -104,6 +145,7 @@ ALIGN 16
 hwint07:
 	hwint_master 7
 
+; 默认中断（从）
 %macro hwint_slave 1
 	push %1
 	call spurious_irq
