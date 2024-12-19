@@ -14,6 +14,7 @@ INCLUDE_KERNEL = kernel/include/type.h\
 				 kernel/include/proto.h\
 				 kernel/include/global.h\
 				 kernel/include/string.h\
+				 kernel/include/proc.h\
 
 OBJ = 	$(INTERMEDIATE_FILE)kernel/kernel.o\
 		$(INTERMEDIATE_FILE)kernel/start.o\
@@ -21,6 +22,7 @@ OBJ = 	$(INTERMEDIATE_FILE)kernel/kernel.o\
 		$(INTERMEDIATE_FILE)kernel/global.o\
 		$(INTERMEDIATE_FILE)kernel/protect.o\
 		$(INTERMEDIATE_FILE)kernel/main.o\
+		$(INTERMEDIATE_FILE)kernel/clock.o\
 		$(INTERMEDIATE_FILE)lib/klib.o\
 		$(INTERMEDIATE_FILE)lib/kliba.o\
 		$(INTERMEDIATE_FILE)lib/string.o\
@@ -95,6 +97,9 @@ $(INTERMEDIATE_FILE)kernel/protect.o: kernel/protect.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/main.o: kernel/main.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/clock.o: kernel/clock.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

@@ -6,5 +6,6 @@ typedef unsigned short	u16;
 typedef unsigned int	u32;
 
 typedef void (*int_handler) ();
+typedef void (*task_f) ();
 
 #endif

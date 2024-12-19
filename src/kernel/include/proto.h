@@ -19,6 +19,10 @@ PUBLIC void restart();
 /* kernel/main.c */
 PUBLIC int kernel_main();
 
+/* 进程 */
+PUBLIC void TestA();
+PUBLIC void TestB();
+
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);
 PUBLIC void out_byte(u16 port, u8 value);

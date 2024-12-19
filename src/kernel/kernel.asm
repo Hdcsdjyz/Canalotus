@@ -6,6 +6,7 @@ extern exception_handler
 extern spurious_irq
 extern kernel_main
 extern disp_str
+extern clock_handler
 
 ; 导入变量
 extern gdt_ptr
@@ -106,11 +107,12 @@ hwint00:
 
 	mov esp, StackTop
 	sti
-	push clock_int_msg
-	call disp_str
+	push 0
+	call clock_handler
 	add esp, 4
 	cli
 	mov esp, [p_proc_ready]
+	lldt [esp + P_LDT_SEL]
 	lea eax, [esp + P_STACKTOP]
 	mov dword [tss + TSS3_S_SP0], eax
 .re_enter:

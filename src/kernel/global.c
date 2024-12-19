@@ -7,4 +7,8 @@
 #include "include/protect.h"
 #include "include/proc.h"
 
-PUBLIC struct process process_table[NR_TASKS];
+PUBLIC struct process proc_table[NR_TASKS];
+PUBLIC u8 task_stack[STACK_SIZE_TOTAL];
+
+PUBLIC struct task task_table[NR_TASKS] = {{TestA, STACK_SIZE_TESTA, "TestA"},
+										   {TestB, STACK_SIZE_TESTB, "TestB"}};

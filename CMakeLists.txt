@@ -17,6 +17,7 @@ add_library(main.o OBJECT src/kernel/main.c)
 add_library(i8259.o OBJECT src/kernel/i8259.c)
 add_library(protect.o OBJECT src/kernel/protect.c)
 add_library(global.o OBJECT src/kernel/global.c)
+add_library(clock.o OBJECT src/kernel/clock.c)
 add_library(klib.o OBJECT src/lib/klib.c)
 add_library(string.o OBJECT src/lib/string.asm)
 

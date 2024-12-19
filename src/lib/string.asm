@@ -2,7 +2,9 @@
 
 global memcpy
 global memset
+global strcpy
 
+; void* memcpy(void* p_dst, void* p_src, int size);
 memcpy:
 	push ebp
 	mov ebp, esp
@@ -30,6 +32,7 @@ memcpy:
 	pop ebp
 	ret
 
+; void memset(void* p_dst, char ch, int size);
 memset:
 	push ebp
 	mov ebp, esp
@@ -51,5 +54,22 @@ memset:
 	pop edi
 	pop esi
 	mov esp ,ebp
+	pop ebp
+	ret
+
+; char* strcpy(char* p_dst, char* p_src);
+strcpy:
+	push ebp
+	mov ebp, esp
+	mov esi, [ebp + 12]
+	mov edi, [ebp + 8]
+.1:
+	mov al, [esi]
+	inc esi
+	mov byte [edi], al
+	inc edi
+	cmp al, 0
+	jnz .1
+	mov eax, [ebp + 8]
 	pop ebp
 	ret

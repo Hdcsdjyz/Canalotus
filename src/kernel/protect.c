@@ -96,6 +96,8 @@ void hwint15();
 PUBLIC void init_prot()
 {
 	init_8259A();
+
+	/* 初始化异常处理程序 */
 	init_idt_desc(INT_VECTOR_DIVIDE, DA_386IGate, divide_error_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_DEBUG, DA_386IGate, single_step_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_NMI, DA_386IGate, nmi_handler, PRIVILEGE_KRNL);
@@ -113,6 +115,7 @@ PUBLIC void init_prot()
 	init_idt_desc(INT_VECTOR_PAGE_FAULT, DA_386IGate, page_fault_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_COPROC_ERR, DA_386IGate, coprocessor_error_handler, PRIVILEGE_KRNL);
 
+	/* 初始化中断处理程序 */
 	init_idt_desc(INT_VECTOR_IRQ0 + 0, DA_386IGate, hwint00, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 1, DA_386IGate, hwint01, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 2, DA_386IGate, hwint02, PRIVILEGE_KRNL);
@@ -136,7 +139,16 @@ PUBLIC void init_prot()
 	init_descriptor(&gdt[INDEX_TSS], vir2phys(seg2phys(SELECTOR_KERNEL_DS), &tss), sizeof(tss) - 1, DA_386TSS);
 	tss.iomap = sizeof(tss);
 
-	init_descriptor(&gdt[INDEX_LDT_FIRST], vir2phys(seg2phys(SELECTOR_KERNEL_DS), proc_table[0].ldts), LDT_SIZE * sizeof(struct descriptor) - 1, DA_LDT);
+	/* 初始化进程的LDT */
+	int i;
+	struct process* p_proc = proc_table;
+	u16 selector_ldt = INDEX_LDT_FIRST << 3;
+	for (i = 0; i < NR_TASKS; i++)
+	{
+		init_descriptor(&gdt[selector_ldt >> 3], vir2phys(seg2phys(SELECTOR_KERNEL_DS), proc_table[i].ldts), LDT_SIZE * sizeof(struct descriptor) - 1, DA_LDT);
+		p_proc++;
+		selector_ldt += 1 << 3;
+	}
 }
 
 /* 由段名求绝对地址 */
@@ -146,9 +158,9 @@ PUBLIC u32 seg2phys(u16 seg)
 	return (p_dest->base_high << 24 | p_dest->base_mid << 16 | p_dest->base_low);
 }
 
-/* 本地函数 */
+/* vvv 本地函数 vvv */
 
-/* 设置idt */
+/* 初始化中断门 */
 PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 privilege)
 {
 	struct gate* p_gate = &idt[vector];
@@ -160,7 +172,7 @@ PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 priv
 	p_gate->offset_high = base >> 16 & 0xFFFF;
 }
 
-/* 设置段 */
+/* 初始化段描述符 */
 PRIVATE void init_descriptor(struct descriptor* p_desc, u32 base, u32 limit, u16 attribute)
 {
 	p_desc->limit_low = limit & 0xFFFF;
@@ -169,5 +181,5 @@ PRIVATE void init_descriptor(struct descriptor* p_desc, u32 base, u32 limit, u16
 	p_desc->attr1 = attribute & 0xFF;
 	p_desc->limit_high_attr2 = (attribute >> 16 & 0x0F) | (attribute >> 8 & 0xF0);
 	p_desc->base_high = base >> 24 & 0xFF;
-
 }
+/* ^^^ 本地函数 ^^^ */
