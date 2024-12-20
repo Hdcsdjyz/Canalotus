@@ -20,12 +20,20 @@ PUBLIC void restart();
 /* kernel/main.c */
 PUBLIC int kernel_main();
 
-/* 进程 */
-PUBLIC void TestA();
-PUBLIC void TestB();
+/*- 进程 */
+void TestA();
+void TestB();
+void TestC();
 
 /* kernel/clock.c */
 PUBLIC void clock_handler(int irq);
+
+/* kernel/kernel.asm */
+PUBLIC void _syscall();
+PUBLIC int get_ticks();
+
+/* kernel/proc.c */
+PUBLIC int syscall_get_ticks();
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);

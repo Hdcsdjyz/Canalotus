@@ -4,6 +4,7 @@
 typedef unsigned char	u8;
 typedef unsigned short	u16;
 typedef unsigned int	u32;
+typedef void* syscall;
 
 typedef void (*int_handler) ();
 typedef void (*task_f) ();

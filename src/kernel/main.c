@@ -52,6 +52,7 @@ void TestA()
 	int i = 0;
 	while (1)
 	{
+		get_ticks();
 		disp_str("A");
 		disp_int(i++);
 		disp_str(".");
@@ -65,6 +66,17 @@ void TestB()
 	while (1)
 	{
 		disp_str("B");
+		disp_int(i++);
+		disp_str(".");
+		delay(1);
+	}
+}
+void TestC()
+{
+	int i = 0x2000;
+	while (1)
+	{
+		disp_str("C");
 		disp_int(i++);
 		disp_str(".");
 		delay(1);

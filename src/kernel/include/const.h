@@ -15,11 +15,13 @@
 #define IDT_SIZE 256
 
 /* 中断 */
+/*- 8259A */
 #define INT_M_CTL 0x20
 #define INT_M_CTLMASK 0x21
 #define INT_S_CTL 0xA0
 #define INT_S_CTLMASK 0xA1
 
+/*- 硬件中断 */
 #define NR_IRQ 16
 #define CLOCK_IRQ 0
 #define KEYBOARD_IRQ 1
@@ -31,6 +33,9 @@
 #define FLOPPY_IRQ 6
 #define PRINTER_IRQ 7
 #define AT_WINI_IRQ 14
+
+/*- 系统调用（软件中断） */
+#define NR_SYSCALL 1 // 系统调用数
 
 /* 权限级 */
 #define PRIVILEGE_KRNL 0

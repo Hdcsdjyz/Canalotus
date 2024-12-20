@@ -57,6 +57,7 @@ struct tss
 };
 
 /* 中断向量 */
+/*- 异常 */
 #define INT_VECTOR_DIVIDE 0x0
 #define INT_VECTOR_DEBUG 0x1
 #define INT_VECTOR_NMI 0x2
@@ -74,8 +75,12 @@ struct tss
 #define INT_VECTOR_PAGE_FAULT 0xE
 #define INT_VECTOR_COPROC_ERR 0x10
 
+/*- 硬件中断 */
 #define INT_VECTOR_IRQ0 0x20
 #define INT_VECTOR_IRQ8 0x28
+
+/*- 系统调用（软件中断） */
+#define INT_VECTOR_SYSCALL 0x30
 
 /* 选择子 */
 #define SELECTOR_DUMMY 0
@@ -95,9 +100,9 @@ struct tss
 #define SA_RPL1		1
 #define SA_RPL2		2
 #define SA_RPL3		3
-#define SA_TI_MASK 0xFFFB
-#define SA_TIG	   0
-#define SA_TIL	   4
+#define SA_TI_MASK  0xFFFB
+#define SA_TIG	    0
+#define SA_TIL	    4
 
 /* 段属性 */
 #define DA_32           0x4000  // 32位段

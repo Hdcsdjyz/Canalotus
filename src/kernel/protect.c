@@ -115,7 +115,7 @@ PUBLIC void init_prot()
 	init_idt_desc(INT_VECTOR_PAGE_FAULT, DA_386IGate, page_fault_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_COPROC_ERR, DA_386IGate, coprocessor_error_handler, PRIVILEGE_KRNL);
 
-	/* 初始化中断处理程序 */
+	/* 初始化硬件中断处理程序 */
 	init_idt_desc(INT_VECTOR_IRQ0 + 0, DA_386IGate, hwint00, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 1, DA_386IGate, hwint01, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 2, DA_386IGate, hwint02, PRIVILEGE_KRNL);
@@ -132,6 +132,9 @@ PUBLIC void init_prot()
 	init_idt_desc(INT_VECTOR_IRQ0 + 13, DA_386IGate, hwint13, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 14, DA_386IGate, hwint14, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_IRQ0 + 15, DA_386IGate, hwint15, PRIVILEGE_KRNL);
+
+	/* 初始化系统调用（软件中断处理程序） */
+	init_idt_desc(INT_VECTOR_SYSCALL, DA_386IGate, _syscall, PRIVILEGE_USER);
 
 	/* 初始化TSS */
 	memset(&tss, 0, sizeof(tss));
@@ -154,13 +157,13 @@ PUBLIC void init_prot()
 /* 由段名求绝对地址 */
 PUBLIC u32 seg2phys(u16 seg)
 {
-	struct descriptor* p_dest = &gdt[seg >> 3];
-	return (p_dest->base_high << 24 | p_dest->base_mid << 16 | p_dest->base_low);
+	struct descriptor* p_dst = &gdt[seg >> 3];
+	return (p_dst->base_high << 24 | p_dst->base_mid << 16 | p_dst->base_low);
 }
 
 /* vvv 本地函数 vvv */
 
-/* 初始化中断门 */
+/*- 初始化中断门 */
 PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 privilege)
 {
 	struct gate* p_gate = &idt[vector];
@@ -172,7 +175,7 @@ PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 priv
 	p_gate->offset_high = base >> 16 & 0xFFFF;
 }
 
-/* 初始化段描述符 */
+/*- 初始化段描述符 */
 PRIVATE void init_descriptor(struct descriptor* p_desc, u32 base, u32 limit, u16 attribute)
 {
 	p_desc->limit_low = limit & 0xFFFF;

@@ -44,10 +44,13 @@ struct task
 	char name[32];
 };
 
-#define NR_TASKS 2 // 进程数
+#define NR_TASKS 3 // 进程数
 
 #define STACK_SIZE_TESTA 0x8000 // 进程TestA堆栈大小
 #define STACK_SIZE_TESTB 0x8000 // 进程TestB堆栈大小
-#define STACK_SIZE_TOTAL (STACK_SIZE_TESTA + STACK_SIZE_TESTA) // 进程堆栈总大小
+#define STACK_SIZE_TESTC 0x8000 // 进程TestC堆栈大小
+#define STACK_SIZE_TOTAL (STACK_SIZE_TESTA\
+						+ STACK_SIZE_TESTB\
+						+ STACK_SIZE_TESTC) // 进程堆栈总大小
 
 #endif

@@ -23,6 +23,8 @@ OBJ = 	$(INTERMEDIATE_FILE)kernel/kernel.o\
 		$(INTERMEDIATE_FILE)kernel/protect.o\
 		$(INTERMEDIATE_FILE)kernel/main.o\
 		$(INTERMEDIATE_FILE)kernel/clock.o\
+		$(INTERMEDIATE_FILE)kernel/syscall.o\
+		$(INTERMEDIATE_FILE)kernel/proc.o\
 		$(INTERMEDIATE_FILE)lib/klib.o\
 		$(INTERMEDIATE_FILE)lib/kliba.o\
 		$(INTERMEDIATE_FILE)lib/string.o\
@@ -35,7 +37,6 @@ LD = ld
 # 编译器&链接器参数
 C_FLAGS =  -c -m32 -nostdinc -fno-builtin -fno-pic -Wall -fno-stack-protector -Wno-parentheses
 LD_FLAGS = -s -m elf_i386 -Ttext 0x30400 -z noexecstack
-#-z noexecstack
 
 # make选项
 .PHONY: default delete_file make_file build make_image
@@ -100,6 +101,12 @@ $(INTERMEDIATE_FILE)kernel/main.o: kernel/main.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/clock.o: kernel/clock.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/syscall.o: kernel/syscall.asm
+	$(ASM) -f elf -I kernel -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/proc.o: kernel/proc.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)
