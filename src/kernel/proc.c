@@ -1,8 +1,8 @@
 #include "include/const.h"
 #include "include/proto.h"
+#include "include/global.h"
 
 PUBLIC int syscall_get_ticks()
 {
-	disp_str("+");
-	return 0;
+	return ticks;
 }

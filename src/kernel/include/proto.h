@@ -27,6 +27,7 @@ void TestC();
 
 /* kernel/clock.c */
 PUBLIC void clock_handler(int irq);
+PUBLIC void milli_delay(int ms);
 
 /* kernel/kernel.asm */
 PUBLIC void _syscall();
@@ -46,6 +47,5 @@ PUBLIC void enable_irq(int irq);
 /* lib/klib.c */
 PUBLIC char* itoa(char* str, int num);
 PUBLIC void disp_int(int input);
-PUBLIC void delay(int time);
 
 #endif

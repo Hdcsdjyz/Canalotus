@@ -16,18 +16,18 @@ INCLUDE_KERNEL = kernel/include/type.h\
 				 kernel/include/string.h\
 				 kernel/include/proc.h\
 
-OBJ = 	$(INTERMEDIATE_FILE)kernel/kernel.o\
-		$(INTERMEDIATE_FILE)kernel/start.o\
-		$(INTERMEDIATE_FILE)kernel/i8259.o\
-		$(INTERMEDIATE_FILE)kernel/global.o\
-		$(INTERMEDIATE_FILE)kernel/protect.o\
-		$(INTERMEDIATE_FILE)kernel/main.o\
-		$(INTERMEDIATE_FILE)kernel/clock.o\
-		$(INTERMEDIATE_FILE)kernel/syscall.o\
-		$(INTERMEDIATE_FILE)kernel/proc.o\
-		$(INTERMEDIATE_FILE)lib/klib.o\
-		$(INTERMEDIATE_FILE)lib/kliba.o\
-		$(INTERMEDIATE_FILE)lib/string.o\
+OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
+	  $(INTERMEDIATE_FILE)kernel/start.o\
+	  $(INTERMEDIATE_FILE)kernel/i8259.o\
+	  $(INTERMEDIATE_FILE)kernel/global.o\
+	  $(INTERMEDIATE_FILE)kernel/protect.o\
+	  $(INTERMEDIATE_FILE)kernel/main.o\
+	  $(INTERMEDIATE_FILE)kernel/clock.o\
+	  $(INTERMEDIATE_FILE)kernel/syscall.o\
+	  $(INTERMEDIATE_FILE)kernel/proc.o\
+	  $(INTERMEDIATE_FILE)lib/klib.o\
+	  $(INTERMEDIATE_FILE)lib/kliba.o\
+	  $(INTERMEDIATE_FILE)lib/string.o\
 
 # 编译器&链接器
 ASM = nasm

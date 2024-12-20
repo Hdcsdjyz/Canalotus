@@ -7,7 +7,7 @@
 编辑器：CLion
 
 编译环境：  
-　　系统：WSL_Ubuntu-24.04  
+　　系统：WSL2_Ubuntu-24.04  
 　　编译器：nasm-2.16.01  
 　　　　　　gcc-13.2.0  
 　　　　　　ld-2.42

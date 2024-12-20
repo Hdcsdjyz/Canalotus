@@ -7,6 +7,7 @@ PUBLIC int kernel_main()
 {
 	disp_str("-----kernel_main() starts-----");
 
+	/* 初始化进程 */
 	struct task* p_task = task_table;
 	struct process* p_proc = proc_table;
 	u8* p_task_stack = task_stack + STACK_SIZE_TOTAL;
@@ -36,9 +37,15 @@ PUBLIC int kernel_main()
 		selector_ldt += 1 << 3;
 	}
 
+	/* 初始化硬件计时器 */
+	out_byte(TIMER_MODE, RATE_GENERATOR);
+	out_byte(TIMER0, (u8)(TIMER_FREQUENCY / HZ));
+	out_byte(TIMER0, (u8)(TIMER_FREQUENCY / HZ >> 8));
+
 	put_irq_handler(CLOCK_IRQ, clock_handler);
 	enable_irq(CLOCK_IRQ);
 	k_reenter = 0;
+	ticks = 0;
 	p_proc_ready = proc_table;
 	restart();
 	while (1)
@@ -56,7 +63,7 @@ void TestA()
 		disp_str("A");
 		disp_int(i++);
 		disp_str(".");
-		delay(1);
+		milli_delay(1000);
 	}
 }
 
@@ -68,7 +75,7 @@ void TestB()
 		disp_str("B");
 		disp_int(i++);
 		disp_str(".");
-		delay(1);
+		milli_delay(1000);
 	}
 }
 void TestC()
@@ -79,6 +86,6 @@ void TestC()
 		disp_str("C");
 		disp_int(i++);
 		disp_str(".");
-		delay(1);
+		milli_delay(1000);
 	}
 }

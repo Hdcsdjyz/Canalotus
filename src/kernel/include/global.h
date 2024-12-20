@@ -33,4 +33,7 @@ EXTERN struct process* p_proc_ready;
 EXTERN u32 k_reenter;
 extern irq_handler irq_table[];
 
+/* sys */
+EXTERN int ticks;
+
 #endif
