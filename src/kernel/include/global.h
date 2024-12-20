@@ -30,5 +30,6 @@ EXTERN struct process* p_proc_ready;
 
 /* 中断 */
 EXTERN u32 k_reenter;
+extern irq_handler irq_table[];
 
 #endif

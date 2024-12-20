@@ -1,11 +1,17 @@
+%include "../kernel/include/sconst.inc"
+
+; 导入变量
 extern disp_pos
 
 [SECTION .text]
 
+; 导出函数
 global disp_str
 global out_byte
 global in_byte
 global disp_color_str
+global disable_irq
+global enable_irq
 
 ; void disp_str(char* str)
 ; 在屏幕上打印str
@@ -61,6 +67,7 @@ in_byte:
 	nop
 	ret
 
+; PUBLIC void disp_color_str(char* str, u8 color);
 disp_color_str:
 	push ebp
 	mov ebp, esp
@@ -92,3 +99,59 @@ disp_color_str:
 	mov [disp_pos], edi
 	pop ebp
 	ret
+
+; void disable_irq(int irq);
+; 禁用一个中断
+disable_irq:
+	mov ecx, [esp + 4]
+	pushf
+	cli
+	mov ah, 1
+	rol ah, cl
+	cmp cl, 8
+	jae disable_8
+disable_0:
+	in al, INT_M_CTLMASK
+	test al, ah
+	jnz dis_already
+	or al, ah
+	out INT_M_CTLMASK, al
+	popf
+	mov eax, 1
+	ret
+disable_8:
+	in al, INT_S_CTLMASK
+	test al, ah
+	jnz dis_already
+    or al, ah
+    out INT_S_CTLMASK, al
+    popf
+    mov eax, 1
+    ret
+dis_already:
+	popf
+	xor eax, eax
+	ret
+
+; void enable_irq(int irq);
+; 启用一个中断
+enable_irq:
+	mov ecx, [esp + 4]
+	pushf
+	cli
+	mov ah, ~1
+	rol ah, cl
+	cmp cl, 8
+	jae enable_8
+enable_0:
+	in al, INT_M_CTLMASK
+	and al, ah
+	out INT_M_CTLMASK, al
+	popf
+	ret
+enable_8:
+	in al, INT_S_CTLMASK
+    and al, ah
+    out INT_S_CTLMASK, al
+    popf
+    ret

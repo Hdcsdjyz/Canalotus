@@ -3,8 +3,6 @@
 #include "include/global.h"
 #include "include/string.h"
 
-void TestA();
-
 PUBLIC int kernel_main()
 {
 	disp_str("-----kernel_main() starts-----");
@@ -13,8 +11,7 @@ PUBLIC int kernel_main()
 	struct process* p_proc = proc_table;
 	u8* p_task_stack = task_stack + STACK_SIZE_TOTAL;
 	u16 selector_ldt = SELECTOR_LDT_FIRST;
-	int i;
-	for (i = 0; i < NR_TASKS; i++)
+	for (int i = 0; i < NR_TASKS; i++)
 	{
 		strcpy(p_proc->p_name, p_task->name);
 		p_proc->pid = i;
@@ -39,8 +36,9 @@ PUBLIC int kernel_main()
 		selector_ldt += 1 << 3;
 	}
 
-
-	k_reenter = -1;
+	put_irq_handler(CLOCK_IRQ, clock_handler);
+	enable_irq(CLOCK_IRQ);
+	k_reenter = 0;
 	p_proc_ready = proc_table;
 	restart();
 	while (1)

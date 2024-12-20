@@ -82,7 +82,7 @@ $(INTERMEDIATE_FILE)kernel/kernel.o: kernel/kernel.asm
 	$(ASM) -f elf -I kernel -o $@ $<
 
 $(INTERMEDIATE_FILE)lib/kliba.o: lib/kliba.asm
-	$(ASM) -f elf -o $@ $<
+	$(ASM) -f elf -I lib -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/i8259.o: kernel/i8259.c
 	$(C) $(C_FLAGS) -o $@ $<
