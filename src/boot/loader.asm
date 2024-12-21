@@ -30,9 +30,6 @@ LABEL_START:
 	mov ss, ax
 	mov sp, BaseOfStack
 
-	mov dh, 0
-	call DispStrRealMode
-
 ; 获取内存大小
 	mov ebx, 0
 	mov di, _MemChkBuf
@@ -97,8 +94,19 @@ LABEL_GOTO_NEXT_SECTOR_IN_ROOTDIR:
 	add word [wSectorNo], 1
 	jmp LABEL_SEARCH_IN_ROOTDIR_BEGIN
 LABEL_NO_KERNELBIN:
-	mov dh, 2
-	call DispStrRealMode
+	mov dh, 0
+	mov ax, 9
+	mul dh
+	add ax, Msg
+	mov bp, ax
+	mov ax, ds
+	mov es, ax
+	mov cx, 9
+	mov ax, 0x1301
+	mov bx, 0x0007
+	mov dl, 0
+	add dh, 3
+	int 0x10
 	jmp $
 LABEL_FILE_FOUND:
 	mov ax, RootDirSectors
@@ -117,15 +125,6 @@ LABEL_FILE_FOUND:
 	mov bx, OffsetOfKernel
 	mov ax, cx
 LABEL_LOAD_FILE:
-	push ax
-	push bx
-	mov ah, 0x0E
-	mov al, '.'
-	mov bl, 0x0F
-	int 0x10
-	pop bx
-	pop ax
-
 	mov cl, 1
 	call ReadSector
 	pop ax
@@ -141,8 +140,6 @@ LABEL_LOAD_FILE:
 
 LABEL_FILE_LOADED:
 	call KillMotor
-	mov dh, 1
-	call DispStrRealMode
 
 ; 进入保护模式
 	lgdt [GdtPtr]
@@ -162,26 +159,7 @@ wSectorNo           dw 0
 bOdd                db 0
 dwKernelSize        dd 0
 KernelFileName      db "KERNEL  BIN", 0
-MsgLen equ 9
-Msg0    db "Loading  "
-Msg1    db "Ready.   "
-Msg2    db "NO Kernel"
-
-; 函数：DispStrRealMode
-DispStrRealMode:
-	mov ax, MsgLen
-	mul dh
-	add ax, Msg0
-	mov bp, ax
-	mov ax, ds
-	mov es, ax
-	mov cx, MsgLen
-	mov ax, 0x1301
-	mov bx, 0x0007
-	mov dl, 0
-	add dh, 3
-	int 0x10
-	ret
+Msg    db "NO Kernel"
 
 ; 函数：ReadSector
 ; 读取扇区
@@ -273,116 +251,11 @@ LABEL_PM_START:
     mov esp, TopOfStack
 
 ; 设置页
-	push szMemChkTitle
-	call DispStr
 	add esp, 4
 	call DispMemInfo
 	call SetupPaging
-
 	call InitKernel
-
 	jmp Selector_FlatC:KernelEntryPhyAddr
-
-; 显示al中的数
-DispAL:
-	push ecx
-	push edx
-	push edi
-
-	mov edi, [dwDispPos]
-	mov ah, 0x0F
-	mov dl, al
-	shr al, 4
-	mov ecx, 2
-.begin:
-	and al, 0b1111
-	cmp al, 9
-	ja .1
-	add al, '0'
-	jmp .2
-.1:
-	sub al, 0xA
-	add al, 'A'
-.2:
-	mov [gs:edi], ax
-	add edi, 2
-	mov al, dl
-	loop .begin
-	mov [dwDispPos], edi
-	pop edi
-	pop edx
-	pop ecx
-
-	ret
-
-; 显示一个整数
-DispInt:
-	mov eax, [esp + 4]
-	shr eax, 24
-	call DispAL
-	mov eax, [esp + 4]
-	shr eax, 16
-	call DispAL
-	mov eax, [esp + 4]
-	shr eax, 8
-	call DispAL
-	mov eax, [esp + 4]
-    call DispAL
-    mov ah, 0x07
-    mov al, 'h'
-    push edi
-    mov edi, [dwDispPos]
-    mov [gs:edi], ax
-    add edi, 4
-    mov [dwDispPos], edi
-    pop edi
-    ret
-
-; 显示一个字符串
-DispStr:
-	push ebp
-	mov ebp, esp
-	push ebx
-	push esi
-	push edi
-	mov esi, [ebp + 8]
-	mov edi, [dwDispPos]
-	mov ah, 0x0F
-.1:
-	lodsb
-	test al, al
-	jz .2
-	cmp al, 0x0A
-	jnz .3
-	push eax
-	mov eax, edi
-	mov bl, 160
-	div bl
-	and eax, 0xFF
-	inc eax
-	mov bl, 160
-	mul bl
-	mov edi, eax
-	pop eax
-	jmp .1
-.3:
-	mov [gs:edi], ax
-	add edi, 2
-	jmp .1
-.2:
-	mov [dwDispPos], edi
-	pop edi
-	pop esi
-	pop ebx
-	pop ebp
-	ret
-
-; 显示一个回车
-DispReturn:
-	push szReturn
-	call DispStr
-	add esp, 4
-	ret
 
 MemCpy:
 	push ebp
@@ -411,8 +284,7 @@ MemCpy:
 	pop ebp
 	ret
 
-; 显示内存信息
-; 依次显示：基地址基地址长度长度类型
+; 填充ARDStruct
 DispMemInfo:
 	push esi
 	push edi
@@ -423,15 +295,12 @@ DispMemInfo:
 	mov edx, 5
 	mov edi, ARDStruct
 .1:
-	push dword [esi]
-	call DispInt
-	pop eax
+	mov eax, dword [esi]
 	stosd
 	add esi, 4
 	dec edx
 	cmp edx, 0
 	jnz .1
-	call DispReturn
 	cmp dword [dwType], 1
 	jne .2
 	mov eax, [dwBaseAddrLow]
@@ -441,13 +310,6 @@ DispMemInfo:
 	mov [dwMemSize], eax
 .2:
 	loop .loop
-	call DispReturn
-	push szRAMSize
-	call DispStr
-	add esp, 4
-	push dword [dwMemSize]
-	call DispInt
-	add esp, 4
 	pop ecx
 	pop edi
 	pop esi
@@ -518,19 +380,12 @@ InitKernel:
 	jnz .Begin
 	ret
 
-
 [SECTION .data1]
 ALIGN 32
 
 LABEL_DATA:
-; 实模式用
-; 字符串
-_szMemChkTitle: db "BaseAddrL BaseAddrH LengthL   LengthH   Type", 0x0A, 0
-_szRAMSize: db "RAM size:", 0
-_szReturn: db 0x0A, 0
 ; 变量
 _dwMCRNumber: dd 0
-_dwDispPos: dd (80 * 6 + 0) * 2
 _dwMemSize: dd 0
 _ARDStruct:
 	_dwBaseAddrLow:     dd 0
@@ -541,11 +396,7 @@ _ARDStruct:
 _MemChkBuf: times 256 db 0
 
 ; 保护模式下用
-szMemChkTitle:  equ BaseOfLoaderPhyAddr + _szMemChkTitle
-szRAMSize:      equ BaseOfLoaderPhyAddr + _szRAMSize
-szReturn:       equ BaseOfLoaderPhyAddr + _szReturn
 dwMCRNumber:    equ BaseOfLoaderPhyAddr + _dwMCRNumber
-dwDispPos:      equ BaseOfLoaderPhyAddr + _dwDispPos
 dwMemSize:      equ BaseOfLoaderPhyAddr + _dwMemSize
 ARDStruct:      equ BaseOfLoaderPhyAddr + _ARDStruct
 	dwBaseAddrLow:      equ BaseOfLoaderPhyAddr + _dwBaseAddrLow

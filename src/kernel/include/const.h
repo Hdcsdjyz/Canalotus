@@ -10,6 +10,10 @@
 /* 变量可见性 */
 #define EXTERN extern
 
+/* 布尔量 */
+#define TRUE	1
+#define FALSE	0
+
 /* 描述符 */
 #define GDT_SIZE 128
 #define IDT_SIZE 256

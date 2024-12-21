@@ -2,11 +2,10 @@
 #include "include/proc.h"
 #include "include/global.h"
 #include "include/string.h"
+#include "include/color.h"
 
 PUBLIC int kernel_main()
 {
-	disp_str("-----kernel_main() starts-----");
-
 	/* 初始化进程 */
 	struct task* p_task = task_table;
 	struct process* p_proc = proc_table;
@@ -36,6 +35,9 @@ PUBLIC int kernel_main()
 		p_task++;
 		selector_ldt += 1 << 3;
 	}
+	proc_table[0].ticks = proc_table[0].priority = 15;
+	proc_table[1].ticks = proc_table[1].priority = 10;
+	proc_table[2].ticks = proc_table[2].priority = 5;
 
 	/* 初始化硬件计时器 */
 	out_byte(TIMER_MODE, RATE_GENERATOR);
@@ -46,6 +48,7 @@ PUBLIC int kernel_main()
 	enable_irq(CLOCK_IRQ);
 	k_reenter = 0;
 	ticks = 0;
+
 	p_proc_ready = proc_table;
 	restart();
 	while (1)
@@ -56,36 +59,27 @@ PUBLIC int kernel_main()
 
 void TestA()
 {
-	int i = 0;
 	while (1)
 	{
-		get_ticks();
-		disp_str("A");
-		disp_int(i++);
-		disp_str(".");
-		milli_delay(1000);
+		disp_color_str("A.", BRIGHT | MAKE_COLOR(BLACK, RED));
+		milli_delay(20);
 	}
 }
 
 void TestB()
 {
-	int i = 0x1000;
 	while (1)
 	{
-		disp_str("B");
-		disp_int(i++);
-		disp_str(".");
-		milli_delay(1000);
+		disp_color_str("B.", BRIGHT | MAKE_COLOR(BLACK, GREEN));
+		milli_delay(20);
 	}
 }
+
 void TestC()
 {
-	int i = 0x2000;
 	while (1)
 	{
-		disp_str("C");
-		disp_int(i++);
-		disp_str(".");
-		milli_delay(1000);
+		disp_color_str("C.", BRIGHT | MAKE_COLOR(BLACK, BLUE));
+		milli_delay(20);
 	}
 }

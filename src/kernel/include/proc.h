@@ -30,11 +30,13 @@ struct stackframe
 /* 进程信息 */
 struct process
 {
-	struct stackframe regs;
-	u16 ldt_sel;
-	struct descriptor ldts[LDT_SIZE];
-	u32 pid;
-	char p_name[16];
+	struct stackframe regs;				// 寄存器栈
+	u16 ldt_sel;						// idt选择子
+	struct descriptor ldts[LDT_SIZE];   // 代码段和数据段idt
+	int ticks;							//
+	int priority;						// 优先级
+	u32 pid;							//
+	char p_name[16];					//
 };
 
 struct task

@@ -22,10 +22,7 @@ LABEL_START:
 	mov dx, 0x184F
 	int 0x10
 
-	mov dh, 0
-	call DispStr
-
-; 索引loader.bin
+	; 索引loader.bin
 	xor ah, ah
 	xor dl, dl
 	int 0x13
@@ -69,8 +66,17 @@ LABEL_GOTO_NEXT_SECTOR_IN_ROOTDIR:
 	add word [wSectorNo], 1
 	jmp LABEL_SEARCH_IN_ROOTDIR_BEGIN
 LABEL_NO_LOADERBIN:
-	mov dh, 2
-	call DispStr
+	mov ax, 9
+    mul dh
+    add ax, Msg
+    mov bp, ax
+    mov ax, ds
+    mov es, ax
+    mov cx, 9
+    mov ax, 0x1301
+    mov bx, 0x0007
+    mov dl, 0
+    int 0x10
 	jmp $
 LABEL_FILE_FOUND:
 	mov ax, RootDirSectors
@@ -85,15 +91,6 @@ LABEL_FILE_FOUND:
 	mov bx, OffsetOfLoader
 	mov ax, cx
 LABEL_LOAD_FILE:
-	push ax
-	push bx
-	mov ah, 0x0E
-	mov al, '.'
-	mov bl, 0x0F
-	int 0x10
-	pop bx
-	pop ax
-
 	mov cl, 1
 	call ReadSector
 	pop ax
@@ -108,8 +105,6 @@ LABEL_LOAD_FILE:
 	jmp LABEL_LOAD_FILE
 
 LABEL_FILE_LOADED:
-	mov dh, 1
-	call DispStr
 	jmp BaseOfLoader:OffsetOfLoader
 
 ; 变量
@@ -117,25 +112,7 @@ wRootDirSizeForLoop dw RootDirSectors
 wSectorNo           dw 0
 bOdd                db 0
 LoaderFileName      db "LOADER  BIN", 0
-MsgLen equ 9
-BootMsg db "Booting  "
-Msg1    db "Ready.   "
-Msg2    db "NO LOADER"
-
-; 函数：DispStr
-DispStr:
-	mov ax, MsgLen
-	mul dh
-	add ax, BootMsg
-	mov bp, ax
-	mov ax, ds
-	mov es, ax
-	mov cx, MsgLen
-	mov ax, 0x1301
-	mov bx, 0x0007
-	mov dl, 0
-	int 0x10
-	ret
+Msg    db "NO LOADER"
 
 ; 函数：ReadSector
 ; 读取扇区

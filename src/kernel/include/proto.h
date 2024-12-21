@@ -35,6 +35,7 @@ PUBLIC int get_ticks();
 
 /* kernel/proc.c */
 PUBLIC int syscall_get_ticks();
+PUBLIC void schedule();
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);
