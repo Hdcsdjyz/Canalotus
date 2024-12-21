@@ -8,14 +8,6 @@ BOOT = $(OUTPUT_FILE)boot/boot.bin $(OUTPUT_FILE)boot/loader.bin
 KERNEL = $(OUTPUT_FILE)kernel/kernel.bin
 FLOPPY = /mnt/floppy/
 
-INCLUDE_KERNEL = kernel/include/type.h\
-				 kernel/include/const.h\
-				 kernel/include/protect.h\
-				 kernel/include/proto.h\
-				 kernel/include/global.h\
-				 kernel/include/string.h\
-				 kernel/include/proc.h\
-
 OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
 	  $(INTERMEDIATE_FILE)kernel/start.o\
 	  $(INTERMEDIATE_FILE)kernel/i8259.o\
@@ -25,6 +17,8 @@ OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
 	  $(INTERMEDIATE_FILE)kernel/clock.o\
 	  $(INTERMEDIATE_FILE)kernel/syscall.o\
 	  $(INTERMEDIATE_FILE)kernel/proc.o\
+	  $(INTERMEDIATE_FILE)kernel/keyboard.o\
+	  $(INTERMEDIATE_FILE)kernel/tty.o\
 	  $(INTERMEDIATE_FILE)lib/klib.o\
 	  $(INTERMEDIATE_FILE)lib/kliba.o\
 	  $(INTERMEDIATE_FILE)lib/string.o\
@@ -107,6 +101,12 @@ $(INTERMEDIATE_FILE)kernel/syscall.o: kernel/syscall.asm
 	$(ASM) -f elf -I kernel -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/proc.o: kernel/proc.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/keyboard.o: kernel/keyboard.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/tty.o: kernel/tty.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

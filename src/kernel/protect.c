@@ -1,3 +1,11 @@
+/***
+ * @file protect.c
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 保护模式设置
+ ***/
+
 #include "include/global.h"
 #include "include/proto.h"
 #include "include/const.h"

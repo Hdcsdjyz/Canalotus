@@ -1,3 +1,11 @@
+/***
+ * @file global.h
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 全局变量定义
+ ***/
+
 #ifndef _CANALOTUS_GLOBAL_H
 #define _CANALOTUS_GLOBAL_H
 

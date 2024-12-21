@@ -1,3 +1,11 @@
+/***
+ * @file i8259.c
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 8259A中断芯片设置
+ ***/
+
 #include "include/type.h"
 #include "include/const.h"
 #include "include/protect.h"
@@ -31,6 +39,10 @@ PUBLIC void spurious_irq(int irq)
 	disp_str("\n");
 }
 
+/***
+ * @param[in] irq (int)中断号
+ * @param[in] handler (void* (int))中断程序
+ ***/
 PUBLIC void put_irq_handler(int irq, irq_handler handler)
 {
 	disable_irq(irq);

@@ -1,3 +1,11 @@
+/***
+ * @file keyboard.h
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 内核主程序
+ ***/
+
 #include "include/proto.h"
 #include "include/proc.h"
 #include "include/global.h"
@@ -6,6 +14,9 @@
 
 PUBLIC int kernel_main()
 {
+	/* 设置中断程序 */
+	init_clock();
+	init_keyboard();
 	/* 初始化进程 */
 	struct task* p_task = task_table;
 	struct process* p_proc = proc_table;
@@ -38,14 +49,8 @@ PUBLIC int kernel_main()
 	proc_table[0].ticks = proc_table[0].priority = 15;
 	proc_table[1].ticks = proc_table[1].priority = 10;
 	proc_table[2].ticks = proc_table[2].priority = 5;
+	proc_table[3].ticks = proc_table[3].priority = 5;
 
-	/* 初始化硬件计时器 */
-	out_byte(TIMER_MODE, RATE_GENERATOR);
-	out_byte(TIMER0, (u8)(TIMER_FREQUENCY / HZ));
-	out_byte(TIMER0, (u8)(TIMER_FREQUENCY / HZ >> 8));
-
-	put_irq_handler(CLOCK_IRQ, clock_handler);
-	enable_irq(CLOCK_IRQ);
 	k_reenter = 0;
 	ticks = 0;
 
@@ -61,7 +66,6 @@ void TestA()
 {
 	while (1)
 	{
-		disp_color_str("A.", BRIGHT | MAKE_COLOR(BLACK, RED));
 		milli_delay(20);
 	}
 }
@@ -70,7 +74,6 @@ void TestB()
 {
 	while (1)
 	{
-		disp_color_str("B.", BRIGHT | MAKE_COLOR(BLACK, GREEN));
 		milli_delay(20);
 	}
 }
@@ -79,7 +82,6 @@ void TestC()
 {
 	while (1)
 	{
-		disp_color_str("C.", BRIGHT | MAKE_COLOR(BLACK, BLUE));
 		milli_delay(20);
 	}
 }

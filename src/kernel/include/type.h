@@ -1,3 +1,11 @@
+/***
+ * @file type.h
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 类型别名
+ ***/
+
 #ifndef _CANALOTUS_TYPE_H
 #define _CANALOTUS_TYPE_H
 

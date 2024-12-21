@@ -12,8 +12,10 @@ global in_byte
 global disp_color_str
 global disable_irq
 global enable_irq
+global disable_int
+global enable_int
 
-; void disp_str(char* str)
+; void disp_str(char* str);
 ; 在屏幕上打印str
 disp_str:
 	push ebp
@@ -47,7 +49,7 @@ disp_str:
 	pop ebp
 	ret
 
-; void out_byte(u16 port, u8 value)
+; void out_byte(u16 port, u8 value);
 ; 向端口输出一个字节value
 out_byte:
 	mov edx, [esp + 4]
@@ -57,7 +59,7 @@ out_byte:
 	nop
 	ret
 
-; void in_byte(u16 port)
+; u8 in_byte(u16 port);
 ; 从端口输入一个字节
 in_byte:
 	mov edx, [esp + 4]
@@ -123,11 +125,11 @@ disable_8:
 	in al, INT_S_CTLMASK
 	test al, ah
 	jnz dis_already
-    or al, ah
-    out INT_S_CTLMASK, al
-    popf
-    mov eax, 1
-    ret
+	or al, ah
+	out INT_S_CTLMASK, al
+	popf
+	mov eax, 1
+	ret
 dis_already:
 	popf
 	xor eax, eax
@@ -151,7 +153,15 @@ enable_0:
 	ret
 enable_8:
 	in al, INT_S_CTLMASK
-    and al, ah
-    out INT_S_CTLMASK, al
-    popf
-    ret
+	and al, ah
+	out INT_S_CTLMASK, al
+	popf
+	ret
+
+disable_int:
+	cli
+	ret
+
+enable_int:
+	sti
+	ret

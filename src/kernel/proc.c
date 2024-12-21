@@ -1,3 +1,11 @@
+/***
+ * @file proc.c
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 进程调度
+ ***/
+
 #include "include/const.h"
 #include "include/proto.h"
 #include "include/global.h"

@@ -1,5 +1,15 @@
+/***
+ * @file proto.h
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 全局函数声明
+ ***/
+
 #ifndef _CANALOTUS_PROTO_H_
 #define _CANALOTUS_PROTO_H_
+
+/*** 函数声明 ***/
 
 #include "type.h"
 #include "const.h"
@@ -26,6 +36,7 @@ void TestB();
 void TestC();
 
 /* kernel/clock.c */
+PUBLIC void init_clock();
 PUBLIC void clock_handler(int irq);
 PUBLIC void milli_delay(int ms);
 
@@ -37,13 +48,23 @@ PUBLIC int get_ticks();
 PUBLIC int syscall_get_ticks();
 PUBLIC void schedule();
 
+/* kernel/keyboard.c */
+PUBLIC void init_keyboard();
+PUBLIC void keyboard_handler(int irq);
+PUBLIC void keyboard_read();
+
+/* kernel/tty.c */
+PUBLIC void sys_tty();
+
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);
 PUBLIC void out_byte(u16 port, u8 value);
-PUBLIC void in_byte(u16 port);
+PUBLIC u8 in_byte(u16 port);
 PUBLIC void disp_color_str(char* str, u8 color);
 PUBLIC void disable_irq(int irq);
 PUBLIC void enable_irq(int irq);
+PUBLIC void disable_int();
+PUBLIC void enable_int();
 
 /* lib/klib.c */
 PUBLIC char* itoa(char* str, int num);

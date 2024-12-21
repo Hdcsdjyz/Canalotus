@@ -1,3 +1,11 @@
+/***
+ * @file const.h
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 常量定义
+ ***/
+
 #ifndef _CANALOTUS_CONST_H_
 #define _CANALOTUS_CONST_H_
 
@@ -57,5 +65,9 @@
 #define RPL_KRNL SA_RPL0
 #define RPL_SYSU SA_RPL1
 #define RPL_USER SA_RPL3
+
+/* 键盘 */
+#define KBD_DATA	0x60
+#define KBD_CMD		0x64
 
 #endif

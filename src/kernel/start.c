@@ -1,3 +1,11 @@
+/***
+ * @file start.c
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 初始化内核
+ ***/
+
 #include "include/type.h"
 #include "include/const.h"
 #include "include/protect.h"

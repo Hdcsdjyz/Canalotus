@@ -1,3 +1,11 @@
+/***
+ * @file color.h
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 控制台输出颜色
+ ***/
+
 #ifndef _CANALOTUS_COLOR_H_
 #define _CANALOTUS_COLOR_H_
 

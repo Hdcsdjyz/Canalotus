@@ -1,3 +1,11 @@
+/***
+ * @file proc.h
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version 1.0
+ * @brief 进程相关定义
+ ***/
+
 #ifndef _CANALOTUS_PROC_H_
 #define _CANALOTUS_PROC_H_
 
@@ -27,16 +35,19 @@ struct stackframe
 	u32 ss;
 };
 
-/* 进程信息 */
+/***
+ * @struct process
+ * @brief 进程信息
+ ***/
 struct process
 {
-	struct stackframe regs;				// 寄存器栈
-	u16 ldt_sel;						// idt选择子
-	struct descriptor ldts[LDT_SIZE];   // 代码段和数据段idt
-	int ticks;							//
-	int priority;						// 优先级
-	u32 pid;							//
-	char p_name[16];					//
+	struct stackframe regs;				///< 寄存器栈
+	u16 ldt_sel;						///< idt选择子
+	struct descriptor ldts[LDT_SIZE];   ///< 代码段和数据段idt
+	int ticks;							///< 占用帧数
+	int priority;						///< 优先级
+	u32 pid;							///< pid
+	char p_name[16];					///<
 };
 
 struct task
@@ -46,13 +57,16 @@ struct task
 	char name[32];
 };
 
-#define NR_TASKS 3 // 进程数
+#define NR_TASKS 4 // 进程数
 
-#define STACK_SIZE_TESTA 0x8000 // 进程TestA堆栈大小
-#define STACK_SIZE_TESTB 0x8000 // 进程TestB堆栈大小
-#define STACK_SIZE_TESTC 0x8000 // 进程TestC堆栈大小
+#define STACK_SIZE_TESTA 0x8000 ///< 进程TestA堆栈大小
+#define STACK_SIZE_TESTB 0x8000 ///< 进程TestB堆栈大小
+#define STACK_SIZE_TESTC 0x8000 ///< 进程TestC堆栈大小
+
+#define STACK_SIZE_SYS_TTY 0x8000
 #define STACK_SIZE_TOTAL (STACK_SIZE_TESTA\
 						+ STACK_SIZE_TESTB\
-						+ STACK_SIZE_TESTC) // 进程堆栈总大小
+						+ STACK_SIZE_TESTC\
+						+ STACK_SIZE_SYS_TTY) ///< 进程堆栈总大小
 
 #endif
