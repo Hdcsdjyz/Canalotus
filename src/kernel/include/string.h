@@ -14,14 +14,14 @@
 /***
  * @param[out] p_dst void* 目标指针
  * @param[in] p_src void* 源指针
- * @param size int 大小
+ * @param size int 长度
  ***/
 PUBLIC void* memcpy(void* p_dst, void* p_src, int size);
 
 /***
  * @param[out] p_dst void* 目标指针
  * @param[in] ch char 内容
- * @param[in] size int 大小
+ * @param[in] size int 长度
  ***/
 PUBLIC void memset(void* p_dst, char ch, int size);
 

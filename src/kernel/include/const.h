@@ -11,11 +11,9 @@
 
 #include "protect.h"
 
-/* 函数可见性 */
+/* 可见性 */
 #define PUBLIC
 #define PRIVATE static
-
-/* 变量可见性 */
 #define EXTERN extern
 
 /* 布尔量 */
@@ -69,5 +67,18 @@
 /* 键盘 */
 #define KBD_DATA	0x60
 #define KBD_CMD		0x64
+
+/* VGA */
+#define CRTC_ADDR_REG	0x3D4
+#define CRTC_DATA_REG	0x3D5
+#define START_ADDR_H	0xC
+#define START_ADDR_L	0xD
+#define CURSOR_H		0xE
+#define CURSOR_L		0xF
+#define VMEM_BASE		0xB8000
+#define VMEM_SIZE		0x8000
+
+/* 终端 */
+#define NR_CONSOLES 3
 
 #endif

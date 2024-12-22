@@ -117,7 +117,7 @@ struct keyboard
 {
 	u8* p_head;				///< 指向buf中下一个空闲位置
 	u8* p_tail;				///< 指向键盘程序应处理的字节
-	int count;				///< 缓冲区中的字节数
+	u8 count;				///< 缓冲区中的字节数
 	u8 buf[KBD_INBYTES];	///< 缓冲区
 };
 

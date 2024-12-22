@@ -19,6 +19,7 @@ OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
 	  $(INTERMEDIATE_FILE)kernel/proc.o\
 	  $(INTERMEDIATE_FILE)kernel/keyboard.o\
 	  $(INTERMEDIATE_FILE)kernel/tty.o\
+	  $(INTERMEDIATE_FILE)kernel/console.o\
 	  $(INTERMEDIATE_FILE)lib/klib.o\
 	  $(INTERMEDIATE_FILE)lib/kliba.o\
 	  $(INTERMEDIATE_FILE)lib/string.o\
@@ -29,7 +30,7 @@ C = gcc
 LD = ld
 
 # 编译器&链接器参数
-C_FLAGS =  -c -m32 -nostdinc -fno-builtin -fno-pic -Wall -fno-stack-protector -Wno-parentheses
+C_FLAGS =  -c -m32 -nostdinc -fno-builtin -nostdlib -fno-pic -Wall -fno-stack-protector -Wno-parentheses
 LD_FLAGS = -s -m elf_i386 -Ttext 0x30400 -z noexecstack
 
 # make选项
@@ -107,6 +108,9 @@ $(INTERMEDIATE_FILE)kernel/keyboard.o: kernel/keyboard.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/tty.o: kernel/tty.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/console.o: kernel/console.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

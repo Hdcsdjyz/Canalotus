@@ -9,10 +9,9 @@
 #ifndef _CANALOTUS_PROTO_H_
 #define _CANALOTUS_PROTO_H_
 
-/*** 函数声明 ***/
-
 #include "type.h"
 #include "const.h"
+#include "tty.h"
 
 /* kernel/i8259.c */
 PUBLIC void init_8259A();
@@ -51,11 +50,18 @@ PUBLIC void schedule();
 /* kernel/keyboard.c */
 PUBLIC void init_keyboard();
 PUBLIC void keyboard_handler(int irq);
-PUBLIC void keyboard_read();
+PUBLIC void keyboard_read(struct tty* p_tty);
 
 /* kernel/tty.c */
 PUBLIC void sys_tty();
-PUBLIC void in_process(u16 key);
+PUBLIC void in_process(struct tty* p_tty, u16 key);
+PUBLIC u8 is_current_console(struct console* p_console);
+PRIVATE void set_cursor(u32 pos);
+
+/* kernel/console.c */
+PUBLIC void out_char(struct console* p_console, u8 ch);
+PUBLIC void init_screen(struct tty* p_tty);
+PUBLIC void select_console(u8 nr_console);
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);

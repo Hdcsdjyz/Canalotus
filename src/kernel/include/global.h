@@ -13,6 +13,8 @@
 #include "const.h"
 #include "protect.h"
 #include "proc.h"
+#include "console.h"
+#include "tty.h"
 
 #ifdef GLOBAL_VAR_HERE
 #undef EXTERN
@@ -43,5 +45,10 @@ extern irq_handler irq_table[];
 
 /* sys */
 EXTERN int ticks;
+
+/* 终端 */
+extern struct tty tty_table[];
+extern struct console console_table[];
+EXTERN u8 nr_current_console;
 
 #endif

@@ -5,11 +5,12 @@ enable_language(ASM C)
 
 set(CMAKE_ASM_NASM_COMPILER "usr/bin/nasm")
 set(CMAKE_ASM_NASM_FLAGS "-o boot/$(SOURCE_NAME)")
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_FLAGS "-c -nostdlib")
 
 include_directories(src/boot/include)
-add_executable(Canalotus src/boot/boot.asm src/boot/loader.asm)
+add_executable(Canalotus src/boot/boot.asm src/boot/loader.asm
+        src/kernel/include/console.h)
 
 add_library(kernel.o OBJECT src/kernel/kernel.asm)
 add_library(start.o OBJECT src/kernel/start.c)
@@ -22,6 +23,7 @@ add_library(syscall.o OBJECT src/kernel/syscall.asm)
 add_library(proc.o OBJECT src/kernel/proc.c)
 add_library(keyboard.o OBJECT src/kernel/keyboard.c)
 add_library(tty.o OBJECT src/kernel/tty.c)
+add_library(console.o OBJECT src/kernel/console.c)
 add_library(kliba.o OBJECT src/lib/kliba.asm)
 add_library(klib.o OBJECT src/lib/klib.c)
 add_library(string.o OBJECT src/lib/string.asm)

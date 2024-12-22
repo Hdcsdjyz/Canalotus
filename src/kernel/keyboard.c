@@ -9,8 +9,8 @@
 #include "include/const.h"
 #include "include/proto.h"
 #include "include/keyboard.h"
-#include "include/string.h"
 #include "include/keymap.h"
+#include "include/tty.h"
 
 PRIVATE struct keyboard kbd;
 
@@ -53,7 +53,7 @@ PUBLIC void keyboard_handler(int irq)
 	}
 }
 
-PUBLIC void keyboard_read()
+PUBLIC void keyboard_read(struct tty* p_tty)
 {
 	u8 scan_code;
 	char output[2];
@@ -183,7 +183,7 @@ PUBLIC void keyboard_read()
 				key |= lalt ? FLAG_LALT : 0;
 				key |= ralt ? FLAG_RALT : 0;
 
-				in_process(key);
+				in_process(p_tty, key);
 			}
 		}
 	}

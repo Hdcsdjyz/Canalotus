@@ -8,12 +8,8 @@
 
 #define GLOBAL_VAR_HERE
 
-#include "include/type.h"
 #include "include/global.h"
 #include "include/proto.h"
-#include "include/const.h"
-#include "include/protect.h"
-#include "include/proc.h"
 
 /* 进程 */
 PUBLIC struct process proc_table[NR_TASKS];
@@ -30,3 +26,7 @@ PUBLIC irq_handler irq_table[NR_IRQ];
 PUBLIC syscall syscall_table[NR_SYSCALL] = {
 	syscall_get_ticks
 };
+
+/* 终端 */
+PUBLIC struct tty tty_table[NR_CONSOLES];
+PUBLIC struct console console_table[NR_CONSOLES];
