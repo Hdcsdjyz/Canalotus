@@ -40,8 +40,8 @@ PUBLIC void spurious_irq(int irq)
 }
 
 /***
- * @param[in] irq (int)中断号
- * @param[in] handler (void* (int))中断程序
+ * @param[in] irq int 中断号
+ * @param[in] handler (void*) (int) 中断程序
  ***/
 PUBLIC void put_irq_handler(int irq, irq_handler handler)
 {

@@ -55,6 +55,7 @@ PUBLIC void keyboard_read();
 
 /* kernel/tty.c */
 PUBLIC void sys_tty();
+PUBLIC void in_process(u16 key);
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);
