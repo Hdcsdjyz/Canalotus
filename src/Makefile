@@ -30,7 +30,7 @@ C = gcc
 LD = ld
 
 # 编译器&链接器参数
-C_FLAGS =  -c -m32 -nostdinc -fno-builtin -nostdlib -fno-pic -Wall -fno-stack-protector -Wno-parentheses
+C_FLAGS =  -c -m32 -nostdinc -fno-builtin -nostdlib -fno-pic -Wall -fno-stack-protector
 LD_FLAGS = -s -m elf_i386 -Ttext 0x30400 -z noexecstack
 
 # make选项

@@ -67,6 +67,8 @@
 /* 键盘 */
 #define KBD_DATA	0x60
 #define KBD_CMD		0x64
+#define LED_CODE	0xED
+#define KBD_ACK		0xFA
 
 /* VGA */
 #define CRTC_ADDR_REG	0x3D4

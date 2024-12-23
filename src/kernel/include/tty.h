@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_TTY_H
 #define _CANALOTUS_TTY_H
 
-#define TTY_IN_BYTES 256
+#define TTY_IN_BYTES 255
 
 /***
  * @struct tty

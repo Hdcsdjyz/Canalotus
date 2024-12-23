@@ -170,6 +170,7 @@ exception:
 ALIGN 16
 hwint00:
 	hwint_master 0
+; irq2：键盘中断
 ALIGN 16
 hwint01:
 	hwint_master 1

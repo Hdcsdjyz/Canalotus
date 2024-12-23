@@ -23,4 +23,10 @@ struct console
     u32 cursor;					///< 当前光标位置
 };
 
+#define SCREEN_UP		1
+#define SCREEN_DOWN		-1
+
+#define SCREEN_SIZE		(80 * 25)
+#define SCREEN_WIDTH	80
+
 #endif

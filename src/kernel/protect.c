@@ -49,6 +49,7 @@ PUBLIC void exception_handler(int vec_no, int error_code, int eip, int cs, int e
 	{
 		disp_str(" ");
 	}
+
 	disp_pos = 0;
 	disp_color_str("Exception! --> ", text_color);
 	disp_color_str(err_msg[vec_no], text_color);

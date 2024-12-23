@@ -18,6 +18,7 @@
 PRIVATE void init_tty(struct tty* p_tty);
 PRIVATE void tty_do_read(struct tty* p_tty);
 PRIVATE void tty_do_write(struct tty* p_tty);
+PRIVATE void put_key(struct tty* p_tty, u16 key);
 
 PUBLIC void sys_tty()
 {
@@ -43,16 +44,7 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 	u8 output[2] = {'\0', '\0'};
 	if (!(key & FLAG_EXT))
 	{
-		if (p_tty->inbuf_count < TTY_IN_BYTES)
-		{
-			*p_tty->p_inbuf_head = key;
-			p_tty->p_inbuf_head++;
-			if (p_tty->p_inbuf_head == p_tty->in_buf + TTY_IN_BYTES)
-			{
-				p_tty->p_inbuf_head = p_tty->in_buf;
-			}
-			p_tty->inbuf_count++;
-		}
+		put_key(p_tty, key);
 	}
 	else
 	{
@@ -63,12 +55,7 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 			{
 				if ((key & FLAG_LSHIFT) || (key & FLAG_RSHIFT))
 				{
-					disable_int();
-					out_byte(CRTC_ADDR_REG, START_ADDR_H);
-					out_byte(CRTC_DATA_REG, ((80 * 10) >> 8) & 0xFF);
-					out_byte(CRTC_ADDR_REG, START_ADDR_L);
-					out_byte(CRTC_DATA_REG, (80 * 10) & 0xFF);
-					enable_int();
+					scroll_screen(p_tty->p_console, SCREEN_UP);
 				}
 				break;
 			}
@@ -76,7 +63,7 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 			{
 				if ((key & FLAG_LSHIFT) || (key & FLAG_RSHIFT))
 				{
-
+					scroll_screen(p_tty->p_console, SCREEN_DOWN);
 				}
 				break;
 			}
@@ -99,17 +86,21 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 				}
 				break;
 			}
+		case ENTER:
+			{
+				put_key(p_tty, '\n');
+				break;
+			}
+		case BACKSPACE:
+			{
+				put_key(p_tty, '\b');
+			}
 		default:
 			{
 				break;
 			}
 		}
 	}
-}
-
-PUBLIC u8 is_current_console(struct console* p_console)
-{
-	return p_console == &console_table[nr_current_console];
 }
 
 /************/
@@ -141,5 +132,19 @@ PRIVATE void tty_do_write(struct tty* p_tty)
 		}
 		p_tty->inbuf_count--;
 		out_char(p_tty->p_console, ch);
+	}
+}
+
+PRIVATE void put_key(struct tty* p_tty, u16 key)
+{
+	if (p_tty->inbuf_count < TTY_IN_BYTES)
+	{
+		*p_tty->p_inbuf_head = key;
+		p_tty->p_inbuf_head++;
+		if (p_tty->p_inbuf_head == p_tty->in_buf + TTY_IN_BYTES)
+		{
+			p_tty->p_inbuf_head = p_tty->in_buf;
+		}
+		p_tty->inbuf_count++;
 	}
 }

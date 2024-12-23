@@ -9,10 +9,33 @@ set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_FLAGS "-c -nostdlib")
 
 include_directories(src/boot/include)
-add_executable(Canalotus src/boot/boot.asm src/boot/loader.asm
-        src/kernel/include/console.h)
+add_executable(boot src/boot/boot.asm
+        src/boot/include/FAT12header.inc
+        src/boot/include/load.inc
+        src/boot/include/macro.inc
+)
+add_executable(loader src/boot/loader.asm
+        src/boot/include/FAT12header.inc
+        src/boot/include/load.inc
+        src/boot/include/macro.inc
+)
 
-add_library(kernel.o OBJECT src/kernel/kernel.asm)
+add_executable(kernel src/kernel/kernel.asm
+        src/kernel/include/color.h
+        src/kernel/include/console.h
+        src/kernel/include/const.h
+        src/kernel/include/global.h
+        src/kernel/include/keyboard.h
+        src/kernel/include/keymap.h
+        src/kernel/include/proc.h
+        src/kernel/include/protect.h
+        src/kernel/include/proto.h
+        src/kernel/include/sconst.inc
+        src/kernel/include/string.h
+        src/kernel/include/tty.h
+        src/kernel/include/type.h
+)
+
 add_library(start.o OBJECT src/kernel/start.c)
 add_library(main.o OBJECT src/kernel/main.c)
 add_library(i8259.o OBJECT src/kernel/i8259.c)

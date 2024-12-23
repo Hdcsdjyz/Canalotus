@@ -55,13 +55,13 @@ PUBLIC void keyboard_read(struct tty* p_tty);
 /* kernel/tty.c */
 PUBLIC void sys_tty();
 PUBLIC void in_process(struct tty* p_tty, u16 key);
-PUBLIC u8 is_current_console(struct console* p_console);
-PRIVATE void set_cursor(u32 pos);
 
 /* kernel/console.c */
 PUBLIC void out_char(struct console* p_console, u8 ch);
 PUBLIC void init_screen(struct tty* p_tty);
 PUBLIC void select_console(u8 nr_console);
+PUBLIC u8 is_current_console(struct console* p_console);
+PUBLIC void scroll_screen(struct console* p_console, u8 direction);
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);

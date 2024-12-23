@@ -15,10 +15,11 @@
 PUBLIC struct process proc_table[NR_TASKS];
 PUBLIC u8 task_stack[STACK_SIZE_TOTAL];
 PUBLIC struct task task_table[NR_TASKS] = {
+	{sys_tty, STACK_SIZE_SYS_TTY,"tty"},
 	{TestA, STACK_SIZE_TESTA, "TestA"},
 	{TestB, STACK_SIZE_TESTB, "TestB"},
-	{TestC, STACK_SIZE_TESTC, "TestC"},
-	{sys_tty, STACK_SIZE_SYS_TTY,"sys_tty"}
+	{TestC, STACK_SIZE_TESTC, "TestC"}
+
 };
 
 /* 中断 */
