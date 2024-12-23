@@ -155,7 +155,7 @@ PUBLIC void init_prot()
 	int i;
 	struct process* p_proc = proc_table;
 	u16 selector_ldt = INDEX_LDT_FIRST << 3;
-	for (i = 0; i < NR_TASKS; i++)
+	for (i = 0; i < NR_SYSU_PROCS + NR_USER_PROCS; i++)
 	{
 		init_descriptor(&gdt[selector_ldt >> 3], vir2phys(seg2phys(SELECTOR_KERNEL_DS), proc_table[i].ldts), LDT_SIZE * sizeof(struct descriptor) - 1, DA_LDT);
 		p_proc++;

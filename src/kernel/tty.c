@@ -41,7 +41,6 @@ PUBLIC void sys_tty()
 
 PUBLIC void in_process(struct tty* p_tty, u16 key)
 {
-	u8 output[2] = {'\0', '\0'};
 	if (!(key & FLAG_EXT))
 	{
 		put_key(p_tty, key);

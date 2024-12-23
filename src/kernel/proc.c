@@ -21,7 +21,7 @@ PUBLIC void schedule()
 	int greatest_ticks = 0;
 	while (!greatest_ticks)
 	{
-		for (p = proc_table; p < proc_table + NR_TASKS; p++)
+		for (p = proc_table; p < proc_table + NR_SYSU_PROCS + NR_USER_PROCS; p++)
 		{
 			if (p->ticks > greatest_ticks)
 			{
@@ -31,7 +31,7 @@ PUBLIC void schedule()
 		}
 		if (!greatest_ticks)
 		{
-			for (p = proc_table; p < proc_table + NR_TASKS; p++)
+			for (p = proc_table; p < proc_table + NR_SYSU_PROCS + NR_USER_PROCS; p++)
 			{
 				p->ticks = p->priority;
 			}

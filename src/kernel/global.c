@@ -12,10 +12,14 @@
 #include "include/proto.h"
 
 /* 进程 */
-PUBLIC struct process proc_table[NR_TASKS];
+PUBLIC struct process proc_table[NR_SYSU_PROCS + NR_USER_PROCS];
 PUBLIC u8 task_stack[STACK_SIZE_TOTAL];
-PUBLIC struct task task_table[NR_TASKS] = {
+
+PUBLIC struct task sysu_proc_table[NR_SYSU_PROCS] = {
 	{sys_tty, STACK_SIZE_SYS_TTY,"tty"},
+};
+
+PUBLIC struct task user_proc_table[NR_USER_PROCS] = {
 	{TestA, STACK_SIZE_TESTA, "TestA"},
 	{TestB, STACK_SIZE_TESTB, "TestB"},
 	{TestC, STACK_SIZE_TESTC, "TestC"}

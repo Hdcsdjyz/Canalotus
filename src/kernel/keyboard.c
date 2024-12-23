@@ -68,7 +68,6 @@ PUBLIC void keyboard_handler(int irq)
 PUBLIC void keyboard_read(struct tty* p_tty)
 {
 	u8 scan_code;
-	char output[2];
 	u8 make;
 	u16 key = 0;
 	u16* keyrow;
@@ -223,22 +222,22 @@ PUBLIC void keyboard_read(struct tty* p_tty)
 				{
 				case PAD_SLASH:
 					{
-						key = "/";
+						key = '/';
 						break;
 					}
 				case PAD_STAR:
 					{
-						key = "*";
+						key = '*';
 						break;
 					}
 				case PAD_MINUS:
 					{
-						key = "-";
+						key = '-';
 						break;
 					}
 				case PAD_PLUS:
 					{
-						key = "+";
+						key = '+';
 						break;
 					}
 				case PAD_ENTER:

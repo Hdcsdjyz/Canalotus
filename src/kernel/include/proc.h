@@ -44,10 +44,12 @@ struct process
 	struct stackframe regs;				///< 寄存器栈
 	u16 ldt_sel;						///< idt选择子
 	struct descriptor ldts[LDT_SIZE];   ///< 代码段和数据段idt
-	u8 ticks;							///< 当前运行占用帧数
-	u8 priority;						///< 优先级
+	u32 ticks;							///< 当前运行占用帧数
+	u32 priority;						///< 优先级
 	u32 pid;							///< pid
-	char p_name[16];					///<
+	char p_name[16];
+
+	u8 nr_tty;							///< 控制台号
 };
 
 struct task
@@ -57,7 +59,8 @@ struct task
 	char name[32];
 };
 
-#define NR_TASKS 4 // 进程数
+#define NR_SYSU_PROCS 1 ///< 系统进程数
+#define NR_USER_PROCS 3 ///< 用户进程数
 
 #define STACK_SIZE_TESTA 0x8000 ///< 进程TestA堆栈大小
 #define STACK_SIZE_TESTB 0x8000 ///< 进程TestB堆栈大小

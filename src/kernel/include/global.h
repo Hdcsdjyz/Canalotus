@@ -34,7 +34,8 @@ EXTERN struct gate idt[IDT_SIZE];
 /* 进程 */
 extern struct process proc_table[];
 extern u8 task_stack[];
-extern struct task task_table[];
+extern struct task sysu_proc_table[];
+extern struct task user_proc_table[];
 
 EXTERN struct tss tss;
 EXTERN struct process* p_proc_ready;
