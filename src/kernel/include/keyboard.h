@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_KEYBOARD_H_
 #define _CANALOTUS_KEYBOARD_H_
 
-#define KBD_INBYTES		32
+#define KBD_IN_BYTES		32
 #define MAP_COLS		3
 #define NR_SCAN_CODES	0x80
 
@@ -115,10 +115,10 @@
  ***/
 struct keyboard
 {
-	u8* p_head;				///< 指向buf中下一个空闲位置
-	u8* p_tail;				///< 指向键盘程序应处理的字节
+	char* p_head;				///< 指向buf中下一个空闲位置
+	char* p_tail;				///< 指向键盘程序应处理的字节
 	u8 count;				///< 缓冲区中的字节数
-	u8 buf[KBD_INBYTES];	///< 缓冲区
+	char buf[KBD_IN_BYTES];	///< 缓冲区
 };
 
 #endif

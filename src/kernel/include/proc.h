@@ -44,8 +44,8 @@ struct process
 	struct stackframe regs;				///< 寄存器栈
 	u16 ldt_sel;						///< idt选择子
 	struct descriptor ldts[LDT_SIZE];   ///< 代码段和数据段idt
-	u32 ticks;							///< 当前运行占用帧数
-	u32 priority;						///< 优先级
+	int ticks;							///< 当前运行占用帧数
+	int priority;						///< 优先级
 	u32 pid;							///< pid
 	char p_name[16];
 

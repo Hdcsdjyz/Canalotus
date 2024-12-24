@@ -18,8 +18,6 @@ extern p_proc_ready
 extern k_reenter
 extern irq_table
 
-[SECTION .data]
-
 [SECTION .bss]
 StackSpace resb 2 * 1024
 StackTop:

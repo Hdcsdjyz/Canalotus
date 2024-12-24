@@ -53,7 +53,7 @@ memset:
 	pop ecx
 	pop edi
 	pop esi
-	mov esp ,ebp
+	mov esp, ebp
 	pop ebp
 	ret
 

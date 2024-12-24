@@ -5,7 +5,7 @@ PUBLIC char* itoa(char* str, int num)
 {
 	char* p = str;
 	char ch;
-	u8 flag = 0;
+	u8 flag = FALSE;
 	*p++ = '0';
 	*p++ = 'x';
 	if (num == 0)
@@ -16,10 +16,10 @@ PUBLIC char* itoa(char* str, int num)
 	{
 		for (int i = 28; i >= 0; i -= 4)
 		{
-			ch = num >> i & 0xF;
-			if (flag || ch > 0)
+			ch = (num >> i) & 0xF;
+			if (flag || (ch > 0))
 			{
-				flag = 1;
+				flag = TRUE;
 				ch += '0';
 				if (ch > '9')
 				{

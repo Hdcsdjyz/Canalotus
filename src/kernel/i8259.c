@@ -15,16 +15,16 @@
 /* 初始化8259A */
 PUBLIC void init_8259A()
 {
-	out_byte(INT_M_CTL, 0x11);
-	out_byte(INT_S_CTL, 0x11);
-	out_byte(INT_M_CTLMASK, INT_VECTOR_IRQ0);
-	out_byte(INT_S_CTLMASK, INT_VECTOR_IRQ8);
-	out_byte(INT_M_CTLMASK, 0x04);
-	out_byte(INT_S_CTLMASK, 0x02);
-	out_byte(INT_M_CTLMASK, 0x01);
-	out_byte(INT_S_CTLMASK, 0x01);
-	out_byte(INT_M_CTLMASK, 0xFF);
-	out_byte(INT_S_CTLMASK, 0xFF);
+	out_byte(INT_M_CTL, (u8)0x11);
+	out_byte(INT_S_CTL, (u8)0x11);
+	out_byte(INT_M_CTLMASK, (u8)INT_VECTOR_IRQ0);
+	out_byte(INT_S_CTLMASK, (u8)INT_VECTOR_IRQ8);
+	out_byte(INT_M_CTLMASK, (u8)0x04);
+	out_byte(INT_S_CTLMASK, (u8)0x02);
+	out_byte(INT_M_CTLMASK, (u8)0x01);
+	out_byte(INT_S_CTLMASK, (u8)0x01);
+	out_byte(INT_M_CTLMASK, (u8)0xFF);
+	out_byte(INT_S_CTLMASK, (u8)0xFF);
 
 	for (int i = 0; i < NR_IRQ; i++)
 	{

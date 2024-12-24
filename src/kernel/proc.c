@@ -19,6 +19,7 @@ PUBLIC void schedule()
 {
 	struct process* p;
 	int greatest_ticks = 0;
+
 	while (!greatest_ticks)
 	{
 		for (p = proc_table; p < proc_table + NR_SYSU_PROCS + NR_USER_PROCS; p++)

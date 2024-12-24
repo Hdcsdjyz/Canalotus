@@ -66,8 +66,8 @@ struct tss
 	u32 fs;
 	u32 gs;
 	u32 ldt;
-	u32 trap;
-	u32 iomap;
+	u16 trap;
+	u16 iomap;
 };
 
 /* 中断向量 */
@@ -154,6 +154,6 @@ struct tss
 #define LDT_SIZE 2
 
 /* 由线性地址求绝对地址 */
-#define vir2phys(seg_base, vir) (u32)((u32)seg_base + (u32)vir)
+#define vir2phys(seg_base, vir) (u32)((u32)(seg_base) + (u32)(vir))
 
 #endif

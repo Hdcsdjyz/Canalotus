@@ -51,21 +51,17 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 		switch (raw_code)
 		{
 		case UP:
+			if ((key & FLAG_LSHIFT) || (key & FLAG_RSHIFT))
 			{
-				if ((key & FLAG_LSHIFT) || (key & FLAG_RSHIFT))
-				{
-					scroll_screen(p_tty->p_console, SCREEN_UP);
-				}
-				break;
+				scroll_screen(p_tty->p_console, SCREEN_UP);
 			}
+			break;
 		case DOWN:
+			if ((key & FLAG_LSHIFT) || (key & FLAG_RSHIFT))
 			{
-				if ((key & FLAG_LSHIFT) || (key & FLAG_RSHIFT))
-				{
-					scroll_screen(p_tty->p_console, SCREEN_DOWN);
-				}
-				break;
+				scroll_screen(p_tty->p_console, SCREEN_DOWN);
 			}
+			break;
 		case F1:
 		case F2:
 		case F3:
@@ -78,26 +74,19 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 		case F10:
 		case F11:
 		case F12:
+			if (key & FLAG_LALT || key & FLAG_RALT)
 			{
-				if (key & FLAG_LALT || key & FLAG_RALT)
-				{
-					select_console(raw_code - F1);
-				}
-				break;
+				select_console(raw_code - F1);
 			}
+			break;
 		case ENTER:
-			{
-				put_key(p_tty, '\n');
-				break;
-			}
+			put_key(p_tty, '\n');
+			break;
 		case BACKSPACE:
-			{
-				put_key(p_tty, '\b');
-			}
+			put_key(p_tty, '\b');
+			break;
 		default:
-			{
-				break;
-			}
+			break;
 		}
 	}
 }
@@ -123,7 +112,7 @@ PRIVATE void tty_do_write(struct tty* p_tty)
 {
 	if (p_tty->inbuf_count)
 	{
-		u8 ch = *p_tty->p_inbuf_tail;
+		char ch = *p_tty->p_inbuf_tail;
 		p_tty->p_inbuf_tail++;
 		if (p_tty->p_inbuf_tail == p_tty->in_buf + TTY_IN_BYTES)
 		{

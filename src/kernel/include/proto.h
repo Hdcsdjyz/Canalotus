@@ -39,7 +39,7 @@ PUBLIC void init_clock();
 PUBLIC void clock_handler(int irq);
 PUBLIC void milli_delay(int ms);
 
-/* kernel/kernel.asm */
+/* kernel/syscall.asm */
 PUBLIC void _syscall();
 PUBLIC int get_ticks();
 
@@ -61,7 +61,7 @@ PUBLIC void out_char(struct console* p_console, u8 ch);
 PUBLIC void init_screen(struct tty* p_tty);
 PUBLIC void select_console(u8 nr_console);
 PUBLIC u8 is_current_console(struct console* p_console);
-PUBLIC void scroll_screen(struct console* p_console, u8 direction);
+PUBLIC void scroll_screen(struct console* p_console, char direction);
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);

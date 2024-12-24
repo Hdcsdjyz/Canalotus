@@ -110,8 +110,8 @@ PUBLIC void init_prot()
 	init_idt_desc(INT_VECTOR_DIVIDE, DA_386IGate, divide_error_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_DEBUG, DA_386IGate, single_step_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_NMI, DA_386IGate, nmi_handler, PRIVILEGE_KRNL);
-	init_idt_desc(INT_VECTOR_BREAKPOINT, DA_386IGate, breakpoint_handler, PRIVILEGE_KRNL);
-	init_idt_desc(INT_VECTOR_OVERFLOW, DA_386IGate, overflow_handler, PRIVILEGE_KRNL);
+	init_idt_desc(INT_VECTOR_BREAKPOINT, DA_386IGate, breakpoint_handler, PRIVILEGE_USER);
+	init_idt_desc(INT_VECTOR_OVERFLOW, DA_386IGate, overflow_handler, PRIVILEGE_USER);
 	init_idt_desc(INT_VECTOR_BOUNDS, DA_386IGate, bounds_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_INVAL_OP, DA_386IGate, invalid_opcode_handler, PRIVILEGE_KRNL);
 	init_idt_desc(INT_VECTOR_COPROC_NOT, DA_386IGate, device_not_available_handler, PRIVILEGE_KRNL);
@@ -167,7 +167,7 @@ PUBLIC void init_prot()
 PUBLIC u32 seg2phys(u16 seg)
 {
 	struct descriptor* p_dst = &gdt[seg >> 3];
-	return (p_dst->base_high << 24 | p_dst->base_mid << 16 | p_dst->base_low);
+	return ((p_dst->base_high << 24) | (p_dst->base_mid << 16) | p_dst->base_low);
 }
 
 /* vvv 本地函数 vvv */
@@ -180,8 +180,8 @@ PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 priv
 	p_gate->offset_low = base & 0xFFFF;
 	p_gate->selector = SELECTOR_KERNEL_CS;
 	p_gate->dcount = 0;
-	p_gate->attr = desc_type | privilege << 5;
-	p_gate->offset_high = base >> 16 & 0xFFFF;
+	p_gate->attr = desc_type | (privilege << 5);
+	p_gate->offset_high = (base >> 16) & 0xFFFF;
 }
 
 /*- 初始化段描述符 */
@@ -189,9 +189,9 @@ PRIVATE void init_descriptor(struct descriptor* p_desc, u32 base, u32 limit, u16
 {
 	p_desc->limit_low = limit & 0xFFFF;
 	p_desc->base_low = base & 0xFFFF;
-	p_desc->base_mid = base >> 16 & 0xFF;
+	p_desc->base_mid = (base >> 16) & 0xFF;
 	p_desc->attr1 = attribute & 0xFF;
-	p_desc->limit_high_attr2 = (attribute >> 16 & 0x0F) | (attribute >> 8 & 0xF0);
-	p_desc->base_high = base >> 24 & 0xFF;
+	p_desc->limit_high_attr2 = ((limit >> 16) & 0x0F) | ((attribute >> 8 )& 0xF0);
+	p_desc->base_high = (base >> 24) & 0xFF;
 }
 /* ^^^ 本地函数 ^^^ */

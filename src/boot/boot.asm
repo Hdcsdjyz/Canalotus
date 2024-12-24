@@ -66,17 +66,6 @@ LABEL_GOTO_NEXT_SECTOR_IN_ROOTDIR:
 	add word [wSectorNo], 1
 	jmp LABEL_SEARCH_IN_ROOTDIR_BEGIN
 LABEL_NO_LOADERBIN:
-	mov ax, 9
-    mul dh
-    add ax, Msg
-    mov bp, ax
-    mov ax, ds
-    mov es, ax
-    mov cx, 9
-    mov ax, 0x1301
-    mov bx, 0x0007
-    mov dl, 0
-    int 0x10
 	jmp $
 LABEL_FILE_FOUND:
 	mov ax, RootDirSectors
@@ -112,7 +101,6 @@ wRootDirSizeForLoop dw RootDirSectors
 wSectorNo           dw 0
 bOdd                db 0
 LoaderFileName      db "LOADER  BIN", 0
-Msg    db "NO LOADER"
 
 ; 函数：ReadSector
 ; 读取扇区

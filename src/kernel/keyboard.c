@@ -53,11 +53,11 @@ PUBLIC void init_keyboard()
 PUBLIC void keyboard_handler(int irq)
 {
 	u8 scan_code = in_byte(KBD_DATA);
-	if (kbd.count < KBD_INBYTES)
+	if (kbd.count < KBD_IN_BYTES)
 	{
 		*kbd.p_head = scan_code;
 		kbd.p_head++;
-		if (kbd.p_head == kbd.buf + KBD_INBYTES)
+		if (kbd.p_head == kbd.buf + KBD_IN_BYTES)
 		{
 			kbd.p_head = kbd.buf;
 		}
@@ -135,7 +135,7 @@ PUBLIC void keyboard_read(struct tty* p_tty)
 			u8 caps = lshift || rshift;
 			if (caps_lock)
 			{
-				if (keyrow[0] >= 'a' && keyrow[0] <= 'z')
+				if ((keyrow[0] >= 'a') && (keyrow[0] <= 'z'))
 				{
 					caps = !caps;
 				}
@@ -152,168 +152,118 @@ PUBLIC void keyboard_read(struct tty* p_tty)
 			switch (key)
 			{
 			case LSHIFT:
-				{
-					lshift = make;
-					break;
-				}
+				lshift = make;
+				break;
 			case RSHIFT:
-				{
-					rshift = make;
-					break;
-				}
+				rshift = make;
+				break;
 			case LCTRL:
-				{
-					lctrl = make;
-					break;
-				}
+				lctrl = make;
+				break;
 			case RCTRL:
-				{
-					rctrl = make;
-					break;
-				}
+				rctrl = make;
+				break;
 			case LALT:
-				{
-					lalt = make;
-					break;
-				}
+				lalt = make;
+				break;
 			case RALT:
-				{
-					ralt = make;
-					break;
-				}
+				ralt = make;
+				break;
 			case CAPS_LOCK:
+				if (make)
 				{
-					if (make)
-					{
-						caps_lock = !caps_lock;
-						set_leds();
-						break;
-					}
+					caps_lock = !caps_lock;
+					set_leds();
 				}
+				break;
 			case NUM_LOCK:
+				if (make)
 				{
-					if (make)
-					{
-						num_lock = !num_lock;
-						set_leds();
-						break;
-					}
+					num_lock = !num_lock;
+					set_leds();
 				}
+				break;
 			case SCROLL_LOCK:
+				if (make)
 				{
-					if (make)
-					{
-						scroll_lock = !scroll_lock;
-						set_leds();
-						break;
-					}
+					scroll_lock = !scroll_lock;
+					set_leds();
 				}
+				break;
 			default:
 				break;
 			}
 			if (make)
 			{
 				u8 pad = FALSE;
-				if (key >= PAD_SLASH && key <= PAD_9)
+				if ((key >= PAD_SLASH) && (key <= PAD_9))
 				{
 					pad = TRUE;
 				}
 				switch (key)
 				{
 				case PAD_SLASH:
-					{
-						key = '/';
-						break;
-					}
+					key = '/';
+					break;
 				case PAD_STAR:
-					{
-						key = '*';
-						break;
-					}
+					key = '*';
+					break;
 				case PAD_MINUS:
-					{
-						key = '-';
-						break;
-					}
+					key = '-';
+					break;
 				case PAD_PLUS:
-					{
-						key = '+';
-						break;
-					}
+					key = '+';
+					break;
 				case PAD_ENTER:
-					{
-						key = ENTER;
-						break;
-					}
+					key = ENTER;
+					break;
 				default:
+					if (num_lock && (key >= PAD_0) && (key <= PAD_9))
 					{
-						if (num_lock && key >= PAD_0 && key <= PAD_9)
+						key = key - PAD_0 + '0';
+					}
+					else if (num_lock && (key == PAD_DOT))
+					{
+						key = '.';
+					}
+					else
+					{
+						switch (key)
 						{
-							key = key - PAD_0 + '0';
+						case PAD_HOME:
+							key = HOME;
+							break;
+						case PAD_UP:
+							key = UP;
+							break;
+						case PAD_PAGEUP:
+							key = PAGEUP;
+							break;
+						case PAD_LEFT:
+							key = LEFT;
+							break;
+						case PAD_RIGHT:
+							key = RIGHT;
+							break;
+						case PAD_END:
+							key = END;
+							break;
+						case PAD_DOWN:
+							key = DOWN;
+							break;
+						case PAD_PAGEDOWN:
+							key = PAGEDOWN;
+							break;
+						case PAD_INS:
+							key = INSERT;
+							break;
+						case PAD_DEL:
+							key = DELETE;
+							break;
+						default:
+							break;
 						}
-						else if (num_lock && key == PAD_DOT)
-						{
-							key = '.';
-						}
-						else
-						{
-							switch (key)
-							{
-							case PAD_HOME:
-								{
-									key = HOME;
-									break;
-								}
-							case PAD_UP:
-								{
-									key = UP;
-									break;
-								}
-							case PAD_PAGEUP:
-								{
-									key = PAGEUP;
-									break;
-								}
-							case PAD_LEFT:
-								{
-									key = LEFT;
-									break;
-								}
-							case PAD_RIGHT:
-								{
-									key = RIGHT;
-									break;
-								}
-							case PAD_END:
-								{
-									key = END;
-									break;
-								}
-							case PAD_DOWN:
-								{
-									key = DOWN;
-									break;
-								}
-							case PAD_PAGEDOWN:
-								{
-									key = PAGEDOWN;
-									break;
-								}
-							case PAD_INS:
-								{
-									key = INSERT;
-									break;
-								}
-							case PAD_DEL:
-								{
-									key = DELETE;
-									break;
-								}
-							default:
-								break;
-							}
-						}
-						break;
+					break;
 					}
 				}
 				key |= lshift ? FLAG_LSHIFT : 0;
@@ -323,7 +273,6 @@ PUBLIC void keyboard_read(struct tty* p_tty)
 				key |= lalt ? FLAG_LALT : 0;
 				key |= ralt ? FLAG_RALT : 0;
 				key |= pad ? FLAG_PAD : 0;
-
 				in_process(p_tty, key);
 			}
 		}
@@ -339,11 +288,10 @@ PRIVATE u8 get_byte_from_kbdbuf()
 	{
 
 	}
-
 	disable_int();
 	u8 scan_code = *kbd.p_tail;
 	kbd.p_tail++;
-	if (kbd.p_tail == kbd.buf + KBD_INBYTES)
+	if (kbd.p_tail == kbd.buf + KBD_IN_BYTES)
 	{
 		kbd.p_tail = kbd.buf;
 	}
@@ -357,7 +305,7 @@ PRIVATE void kbd_wait()
 	u8 kbd_stat;
 	do
 	{
-		kbd_stat = in_byte(KBD_DATA);
+		kbd_stat = in_byte(KBD_CMD);
 	} while (kbd_stat & 0x02);
 }
 
@@ -367,7 +315,7 @@ PRIVATE void kbd_ack()
 	do
 	{
 		kbd_read = in_byte(KBD_DATA);
-	} while (kbd_read & !KBD_ACK);
+	} while (kbd_read != KBD_ACK);
 }
 
 PRIVATE void set_leds()

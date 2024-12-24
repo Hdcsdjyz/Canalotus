@@ -72,21 +72,20 @@ PUBLIC void init_screen(struct tty* p_tty)
 
 PUBLIC void select_console(u8 nr_console)
 {
-	if (nr_console < 0 || nr_console >= NR_CONSOLES)
+	if ((nr_console < 0) || (nr_console >= NR_CONSOLES))
 	{
 		return;
 	}
 	nr_current_console = nr_console;
-	set_cursor(console_table[nr_console].cursor);
-	set_video_start_addr(console_table[nr_console].current_start_addr);
+	flush(&console_table[nr_console]);
 }
 
 PUBLIC u8 is_current_console(struct console* p_console)
 {
-	return p_console == &console_table[nr_current_console];
+	return (p_console == &console_table[nr_current_console]);
 }
 
-PUBLIC void scroll_screen(struct console* p_console, u8 direction)
+PUBLIC void scroll_screen(struct console* p_console, char direction)
 {
 	if (direction == SCREEN_UP)
 	{
@@ -102,8 +101,7 @@ PUBLIC void scroll_screen(struct console* p_console, u8 direction)
 			p_console->current_start_addr += SCREEN_WIDTH;
 		}
 	}
-	set_video_start_addr(p_console->current_start_addr);
-	set_cursor(p_console->cursor);
+	flush(p_console);
 }
 
 PRIVATE void set_cursor(u32 pos)
@@ -120,7 +118,7 @@ PRIVATE void set_video_start_addr(u32 addr)
 {
 	disable_int();
 	out_byte(CRTC_ADDR_REG, START_ADDR_H);
-	out_byte(CRTC_DATA_REG, addr >> 8 & 0xFF);
+	out_byte(CRTC_DATA_REG, (addr >> 8) & 0xFF);
 	out_byte(CRTC_ADDR_REG, START_ADDR_L);
 	out_byte(CRTC_DATA_REG, addr & 0xFF);
 	enable_int();

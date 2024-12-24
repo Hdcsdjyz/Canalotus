@@ -13,7 +13,7 @@
 
 /* 进程 */
 PUBLIC struct process proc_table[NR_SYSU_PROCS + NR_USER_PROCS];
-PUBLIC u8 task_stack[STACK_SIZE_TOTAL];
+PUBLIC char task_stack[STACK_SIZE_TOTAL];
 
 PUBLIC struct task sysu_proc_table[NR_SYSU_PROCS] = {
 	{sys_tty, STACK_SIZE_SYS_TTY,"tty"},

@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_TTY_H
 #define _CANALOTUS_TTY_H
 
-#define TTY_IN_BYTES 255
+#define TTY_IN_BYTES 256
 
 /***
  * @struct tty
@@ -20,7 +20,7 @@ struct tty
 	u16 in_buf[TTY_IN_BYTES];	///< 输入缓冲区
 	u16* p_inbuf_head;			///< 指向输入缓冲区下一个空闲位置
 	u16* p_inbuf_tail;			///< 指向输入缓冲区应处理的位置
-	u8 inbuf_count;				///< 缓冲区大小
+	u16 inbuf_count;				///< 缓冲区大小
 
 	struct console* p_console;	///< 控制台
 };
