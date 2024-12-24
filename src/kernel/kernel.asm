@@ -224,10 +224,15 @@ ALIGN 16
 hwint15:
 	hwint_slave 15
 
+; 系统调用
 _syscall:
 	call save
+	push dword [p_proc_ready]
 	sti
+	push ecx
+	push ebx
 	call [syscall_table + eax * 4]
+	add esp, 12
 	mov [esi + EAXREG - P_STACKBASE], eax
 	cli
 	ret

@@ -29,7 +29,8 @@ PUBLIC struct task user_proc_table[NR_USER_PROCS] = {
 /* 中断 */
 PUBLIC irq_handler irq_table[NR_IRQ];
 PUBLIC syscall syscall_table[NR_SYSCALL] = {
-	syscall_get_ticks
+	syscall_get_ticks,
+	syscall_write
 };
 
 /* 终端 */

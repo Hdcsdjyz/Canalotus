@@ -20,6 +20,8 @@ OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
 	  $(INTERMEDIATE_FILE)kernel/keyboard.o\
 	  $(INTERMEDIATE_FILE)kernel/tty.o\
 	  $(INTERMEDIATE_FILE)kernel/console.o\
+	  $(INTERMEDIATE_FILE)kernel/printf.o\
+	  $(INTERMEDIATE_FILE)kernel/vsprintf.o\
 	  $(INTERMEDIATE_FILE)lib/klib.o\
 	  $(INTERMEDIATE_FILE)lib/kliba.o\
 	  $(INTERMEDIATE_FILE)lib/string.o\
@@ -111,6 +113,11 @@ $(INTERMEDIATE_FILE)kernel/tty.o: kernel/tty.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/console.o: kernel/console.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/printf.o: kernel/printf.c
+	$(C) $(C_FLAGS) -o $@ $<
+$(INTERMEDIATE_FILE)kernel/vsprintf.o: kernel/vsprintf.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

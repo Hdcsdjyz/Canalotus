@@ -10,7 +10,6 @@
 #include "include/proto.h"
 #include "include/keyboard.h"
 #include "include/keymap.h"
-#include "include/tty.h"
 
 PRIVATE struct keyboard kbd;
 

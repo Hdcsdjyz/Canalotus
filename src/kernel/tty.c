@@ -91,6 +91,23 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 	}
 }
 
+PUBLIC void tty_write(struct tty* p_tty, char* buf, int len)
+{
+	char* p = buf;
+	int i = len;
+	while (i)
+	{
+		out_char(p_tty->p_console, *p++);
+		i--;
+	}
+}
+
+PUBLIC int syscall_write(char* buf, int len, struct process* p_proc)
+{
+	tty_write(&tty_table[p_proc->nr_tty], buf, len);
+	return 0;
+}
+
 /************/
 
 PRIVATE void init_tty(struct tty* p_tty)

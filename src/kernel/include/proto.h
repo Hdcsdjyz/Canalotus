@@ -12,6 +12,7 @@
 #include "type.h"
 #include "const.h"
 #include "tty.h"
+#include "proc.h"
 
 /* kernel/i8259.c */
 PUBLIC void init_8259A();
@@ -42,6 +43,7 @@ PUBLIC void milli_delay(int ms);
 /* kernel/syscall.asm */
 PUBLIC void _syscall();
 PUBLIC int get_ticks();
+PUBLIC void write(char* buf, int len);
 
 /* kernel/proc.c */
 PUBLIC int syscall_get_ticks();
@@ -55,6 +57,8 @@ PUBLIC void keyboard_read(struct tty* p_tty);
 /* kernel/tty.c */
 PUBLIC void sys_tty();
 PUBLIC void in_process(struct tty* p_tty, u16 key);
+PUBLIC void tty_write(struct tty* p_tty, char* buf, int len);
+PUBLIC int syscall_write(char* buf, int len, struct process* p_proc);
 
 /* kernel/console.c */
 PUBLIC void out_char(struct console* p_console, u8 ch);
@@ -62,6 +66,12 @@ PUBLIC void init_screen(struct tty* p_tty);
 PUBLIC void select_console(u8 nr_console);
 PUBLIC u8 is_current_console(struct console* p_console);
 PUBLIC void scroll_screen(struct console* p_console, char direction);
+
+/* kernel/vsprintf.c */
+int vsprintf(char* buf, const char* format, va_list args);
+
+/* kernel/printf.c */
+int printf(const char* format, ...);
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);

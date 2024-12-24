@@ -62,9 +62,9 @@ PUBLIC int kernel_main()
 		selector_ldt += 1 << 3;
 	}
 	proc_table[0].ticks = proc_table[0].priority = 5;
-	proc_table[1].ticks = proc_table[1].priority = 10;
-	proc_table[2].ticks = proc_table[2].priority = 10;
-	proc_table[3].ticks = proc_table[3].priority = 10;
+	proc_table[1].ticks = proc_table[1].priority = 20;
+	proc_table[2].ticks = proc_table[2].priority = 20;
+	proc_table[3].ticks = proc_table[3].priority = 20;
 
 	proc_table[1].nr_tty = 0;
 	proc_table[2].nr_tty = 1;
@@ -88,7 +88,8 @@ void TestA()
 {
 	while (1)
 	{
-		milli_delay(10);
+		printf("<A:%x>", get_ticks());
+		milli_delay(100);
 	}
 }
 
@@ -96,7 +97,8 @@ void TestB()
 {
 	while (1)
 	{
-		milli_delay(10);
+		printf("<B:%x>", get_ticks());
+		milli_delay(100);
 	}
 }
 
@@ -104,6 +106,7 @@ void TestC()
 {
 	while (1)
 	{
-		milli_delay(10);
+		printf("<C:%x>", get_ticks());
+		milli_delay(100);
 	}
 }

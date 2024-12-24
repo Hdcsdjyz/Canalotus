@@ -32,4 +32,10 @@ PUBLIC void memset(void* p_dst, char ch, int size);
  ***/
 PUBLIC char* strcpy(char* p_dst, char* p_src);
 
+/***
+ * @param p_str 字符串
+ * @return 字符串长度
+ ***/
+int strlen(char* p_str);
+
 #endif

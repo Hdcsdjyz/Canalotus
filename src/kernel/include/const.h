@@ -52,7 +52,7 @@
 #define AT_WINI_IRQ		14
 
 /*- 系统调用（软件中断） */
-#define NR_SYSCALL 1 // 系统调用数
+#define NR_SYSCALL 2 // 系统调用数
 
 /* 权限级 */
 #define PRIVILEGE_KRNL 0

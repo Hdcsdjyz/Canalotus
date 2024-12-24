@@ -22,4 +22,6 @@ build20　实现多终端
 build21　处理键盘输入（锁定键、小键盘等）  
 build22　区分进程权限级（目前分为三级：kernel、system、user）  
 build23　修复bug：process中ticks类型错误导致每个进程占用时间意外的长  
-　　　　 优化代码
+　　　　 优化代码  
+build24　实现printf  
+　　　　 修复bug：向控制台打印字符时会跳转到此控制台

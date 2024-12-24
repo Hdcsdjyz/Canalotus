@@ -62,11 +62,6 @@ PUBLIC void init_screen(struct tty* p_tty)
 		p_tty->p_console->cursor = disp_pos / 2;
 		disp_pos = 0;
 	}
-	else
-	{
-		out_char(p_tty->p_console, nr_tty + '0');
-		out_char(p_tty->p_console, '#');
-	}
 	set_cursor(p_tty->p_console->cursor);
 }
 
@@ -126,6 +121,9 @@ PRIVATE void set_video_start_addr(u32 addr)
 
 PRIVATE void flush(struct console* p_console)
 {
-	set_cursor(p_console->cursor);
-	set_video_start_addr(p_console->current_start_addr);
+	if (is_current_console(p_console))
+	{
+		set_cursor(p_console->cursor);
+		set_video_start_addr(p_console->current_start_addr);
+	}
 }
