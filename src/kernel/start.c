@@ -6,12 +6,12 @@
  * @brief 初始化内核
  ***/
 
-#include "include/type.h"
-#include "include/const.h"
-#include "include/protect.h"
-#include "include/proto.h"
-#include "include/string.h"
-#include "include/global.h"
+#include "../include/type.h"
+#include "../include/const.h"
+#include "../include/protect.h"
+#include "../include/proto.h"
+#include "../include/string.h"
+#include "../include/global.h"
 
 PUBLIC void cstart()
 {

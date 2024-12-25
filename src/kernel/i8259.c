@@ -6,11 +6,11 @@
  * @brief 8259A中断芯片设置
  ***/
 
-#include "include/type.h"
-#include "include/const.h"
-#include "include/protect.h"
-#include "include/proto.h"
-#include "include/global.h"
+#include "../include/type.h"
+#include "../include/const.h"
+#include "../include/protect.h"
+#include "../include/proto.h"
+#include "../include/global.h"
 
 /* 初始化8259A */
 PUBLIC void init_8259A()

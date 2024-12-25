@@ -1,5 +1,5 @@
-#include "include/type.h"
-#include "include/proto.h"
+#include "../include/type.h"
+#include "../include/proto.h"
 
 int printf(const char* fmt, ...)
 {

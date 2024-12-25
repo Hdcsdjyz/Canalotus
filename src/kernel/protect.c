@@ -6,10 +6,10 @@
  * @brief 保护模式设置
  ***/
 
-#include "include/global.h"
-#include "include/proto.h"
-#include "include/const.h"
-#include "include/string.h"
+#include "../include/global.h"
+#include "../include/proto.h"
+#include "../include/const.h"
+#include "../include/string.h"
 
 /* 本地函数 */
 PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 privilege);

@@ -1,6 +1,6 @@
-#include "include/proto.h"
-#include "include/global.h"
-#include "include/color.h"
+#include "../include/proto.h"
+#include "../include/global.h"
+#include "../include/color.h"
 
 PRIVATE void set_cursor(u32 pos);
 PRIVATE void set_video_start_addr(u32 addr);

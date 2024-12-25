@@ -6,10 +6,10 @@
  * @brief 键盘输入处理程序
  ***/
 
-#include "include/const.h"
-#include "include/proto.h"
-#include "include/keyboard.h"
-#include "include/keymap.h"
+#include "../include/const.h"
+#include "../include/proto.h"
+#include "../include/keyboard.h"
+#include "../include/keymap.h"
 
 PRIVATE struct keyboard kbd;
 

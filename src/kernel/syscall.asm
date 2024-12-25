@@ -1,4 +1,4 @@
-%include "include/sconst.inc"
+%include "../include/sconst.inc"
 
 INT_VECTOR_SYSCALL equ 0x30
 
@@ -22,5 +22,13 @@ write:
 	mov eax, _NR_write
 	mov ebx, [esp + 4]
 	mov ecx, [esp + 8]
+	int INT_VECTOR_SYSCALL
+	ret
+
+sendrec:
+	mov eax, _NR_sendrec
+	mov ebp, [esp + 4]
+	mov ecx, [esp + 8]
+	mov edx, [esp + 12]
 	int INT_VECTOR_SYSCALL
 	ret

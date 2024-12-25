@@ -21,19 +21,19 @@ add_executable(loader src/boot/loader.asm
 )
 
 add_executable(kernel src/kernel/kernel.asm
-        src/kernel/include/color.h
-        src/kernel/include/console.h
-        src/kernel/include/const.h
-        src/kernel/include/global.h
-        src/kernel/include/keyboard.h
-        src/kernel/include/keymap.h
-        src/kernel/include/proc.h
-        src/kernel/include/protect.h
-        src/kernel/include/proto.h
-        src/kernel/include/sconst.inc
-        src/kernel/include/string.h
-        src/kernel/include/tty.h
-        src/kernel/include/type.h
+        src/include/color.h
+        src/include/console.h
+        src/include/const.h
+        src/include/global.h
+        src/include/keyboard.h
+        src/include/keymap.h
+        src/include/proc.h
+        src/include/protect.h
+        src/include/proto.h
+        src/include/sconst.inc
+        src/include/string.h
+        src/include/tty.h
+        src/include/type.h
 )
 
 add_library(start.o OBJECT src/kernel/start.c)
@@ -51,8 +51,9 @@ add_library(printf.o OBJECT src/kernel/printf.c)
 add_library(vsprintf.o OBJECT src/kernel/vsprintf.c)
 add_library(kliba.o OBJECT src/lib/kliba.asm)
 add_library(klib.o OBJECT src/lib/klib.c)
+add_library(misc.o OBJECT src/lib/misc.c)
 add_library(string.o OBJECT src/lib/string.asm)
 
-include_directories(src/kernel/include)
+include_directories(src/include)
 
 

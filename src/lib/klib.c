@@ -1,5 +1,5 @@
-#include "../kernel/include/const.h"
-#include "../kernel/include/proto.h"
+#include "../include/const.h"
+#include "../include/proto.h"
 
 PUBLIC char* itoa(char* str, int num)
 {

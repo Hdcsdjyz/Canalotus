@@ -6,9 +6,9 @@
  * @brief 时钟处理程序
  ***/
 
-#include "include/const.h"
-#include "include/proto.h"
-#include "include/global.h"
+#include "../include/const.h"
+#include "../include/proto.h"
+#include "../include/global.h"
 
 PUBLIC void init_clock()
 {

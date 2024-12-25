@@ -48,6 +48,7 @@ PUBLIC void write(char* buf, int len);
 /* kernel/proc.c */
 PUBLIC int syscall_get_ticks();
 PUBLIC void schedule();
+PUBLIC int sys_sendrec(int function, int src_dst, struct message* m, struct process* p);
 
 /* kernel/keyboard.c */
 PUBLIC void init_keyboard();

@@ -6,11 +6,11 @@
  * @brief 内核主程序
  ***/
 
-#include "include/proto.h"
-#include "include/proc.h"
-#include "include/global.h"
-#include "include/string.h"
-#include "include/color.h"
+#include "../include/proto.h"
+#include "../include/proc.h"
+#include "../include/global.h"
+#include "../include/string.h"
+#include "../include/color.h"
 
 PUBLIC int kernel_main()
 {

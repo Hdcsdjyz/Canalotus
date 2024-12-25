@@ -8,8 +8,8 @@
 
 #define GLOBAL_VAR_HERE
 
-#include "include/global.h"
-#include "include/proto.h"
+#include "../include/global.h"
+#include "../include/proto.h"
 
 /* 进程 */
 PUBLIC struct process proc_table[NR_SYSU_PROCS + NR_USER_PROCS];

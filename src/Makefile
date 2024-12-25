@@ -117,7 +117,11 @@ $(INTERMEDIATE_FILE)kernel/console.o: kernel/console.c
 
 $(INTERMEDIATE_FILE)kernel/printf.o: kernel/printf.c
 	$(C) $(C_FLAGS) -o $@ $<
+
 $(INTERMEDIATE_FILE)kernel/vsprintf.o: kernel/vsprintf.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)lib/misc.o: lib/misc.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

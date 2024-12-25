@@ -1,4 +1,4 @@
-%include "../kernel/include/sconst.inc"
+%include "../include/sconst.inc"
 
 ; 导入变量
 extern disp_pos

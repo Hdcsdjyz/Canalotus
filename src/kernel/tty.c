@@ -6,11 +6,11 @@
  * @brief 终端
  ***/
 
-#include "include/const.h"
-#include "include/proto.h"
-#include "include/keyboard.h"
-#include "include/tty.h"
-#include "include/global.h"
+#include "../include/const.h"
+#include "../include/proto.h"
+#include "../include/keyboard.h"
+#include "../include/tty.h"
+#include "../include/global.h"
 
 #define TTY_FIRST	(tty_table)
 #define TTY_END		(tty_table + NR_CONSOLES)

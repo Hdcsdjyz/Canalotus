@@ -6,9 +6,9 @@
  * @brief 进程调度
  ***/
 
-#include "include/const.h"
-#include "include/proto.h"
-#include "include/global.h"
+#include "../include/const.h"
+#include "../include/proto.h"
+#include "../include/global.h"
 
 PUBLIC int syscall_get_ticks()
 {
@@ -38,4 +38,9 @@ PUBLIC void schedule()
 			}
 		}
 	}
+}
+
+PUBLIC int sys_sendrec(int function, int src_dst, struct message* m, struct process* p)
+{
+
 }

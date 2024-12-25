@@ -1,6 +1,6 @@
 #include "include/type.h"
-#include "include/proto.h"
-#include "include/string.h"
+#include "../include/proto.h"
+#include "../include/string.h"
 
 int vsprintf(char* buf, const char* fmt, va_list args)
 {
