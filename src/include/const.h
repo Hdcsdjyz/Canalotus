@@ -10,6 +10,7 @@
 #define _CANALOTUS_CONST_H_
 
 #include "protect.h"
+#include "proc.h"
 
 /* 可见性 */
 #define PUBLIC
@@ -86,13 +87,43 @@
 /* assert */
 #define ASSERT
 #ifdef ASSERT
-void assertion_failure(char* exp, char* file, char* base_file, int line);
-#define assert(exp) if(exp) else assertion_failure(#exp, __FILE__, __BASE_FILE__, __LINE__)
+void assertion_failure(char* exp, char* file, int line);
+#define assert(exp) if(exp); else assertion_failure(#exp, __FILE__, __LINE__)
 #else
 #define assert(exp)
 #endif
 
 #define MAG_CH_PANIC	'\002'
 #define MAG_CH_ASSERT	'\003'
+
+/* 消息的目标 */
+#define INVALID_DRIVER	-20
+#define INTERRUPT		-10
+#define TASK_TTY		0
+#define TASK_SYS		1
+#define ANY (NR_SYSU_PROCS + NR_USER_PROCS + 10)
+#define NO_PROC (NR_SYSU_PROCS + NR_USER_PROCS + 20)
+/* 消息类型 */
+#define SEND		1
+#define RECEIVE		2
+#define BOTH		3
+
+/* 进程 */
+#define SENDING   0x02
+#define RECEIVING 0x04
+
+/***
+ * @enum msgtype
+ * @brief 消息类型
+ ***/
+enum msgtype
+{
+	HARD_INT = 1,
+	GET_TICKS
+};
+
+#define RETVAL u.m3.m3i1
+
+#define STR_DEFAULT_LEN 1024
 
 #endif

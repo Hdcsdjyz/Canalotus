@@ -29,6 +29,8 @@ PUBLIC void restart();
 
 /* kernel/main.c */
 PUBLIC int kernel_main();
+PUBLIC void panic(const char* fmt, ...);
+PUBLIC int get_ticks();
 
 /*- 进程 */
 void TestA();
@@ -42,13 +44,16 @@ PUBLIC void milli_delay(int ms);
 
 /* kernel/syscall.asm */
 PUBLIC void _syscall();
-PUBLIC int get_ticks();
-PUBLIC void write(char* buf, int len);
+PUBLIC int printx(char* str);
+PUBLIC int sendrec(int function, int src_dst, struct message* p_msg);
 
 /* kernel/proc.c */
-PUBLIC int syscall_get_ticks();
 PUBLIC void schedule();
-PUBLIC int sys_sendrec(int function, int src_dst, struct message* m, struct process* p);
+PUBLIC int syscall_sendrec(int function, int src_dst, struct message* m, struct process* p);
+PUBLIC void* va2la(int pid, void* va);
+PUBLIC int ldt_seg_linear(struct process* p, int idx);
+PUBLIC void reset_msg(struct message* p);
+PUBLIC int send_recv(int function, int src_dst, struct message* msg);
 
 /* kernel/keyboard.c */
 PUBLIC void init_keyboard();
@@ -60,6 +65,7 @@ PUBLIC void sys_tty();
 PUBLIC void in_process(struct tty* p_tty, u16 key);
 PUBLIC void tty_write(struct tty* p_tty, char* buf, int len);
 PUBLIC int syscall_write(char* buf, int len, struct process* p_proc);
+PUBLIC int syscall_printx(int _unused1, int _unused2, char* s, struct process* p_proc);
 
 /* kernel/console.c */
 PUBLIC void out_char(struct console* p_console, u8 ch);
@@ -70,9 +76,13 @@ PUBLIC void scroll_screen(struct console* p_console, char direction);
 
 /* kernel/vsprintf.c */
 int vsprintf(char* buf, const char* format, va_list args);
+int sprintf(char* buf, const char* fmt, ...);
 
 /* kernel/printf.c */
 int printf(const char* format, ...);
+
+/* kernel/sys.c */
+PUBLIC void sys_sys();
 
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);
@@ -87,5 +97,9 @@ PUBLIC void enable_int();
 /* lib/klib.c */
 PUBLIC char* itoa(char* str, int num);
 PUBLIC void disp_int(int input);
+
+/* lib/misc.c */
+PUBLIC void assertion_failure(char* exp, char* file, int line);
+PUBLIC void spin(char* func_name);
 
 #endif

@@ -227,12 +227,15 @@ hwint15:
 ; 系统调用
 _syscall:
 	call save
-	push dword [p_proc_ready]
 	sti
+	push esi
+	push dword [p_proc_ready]
+	push edx
 	push ecx
 	push ebx
 	call [syscall_table + eax * 4]
-	add esp, 12
+	add esp, 16
+	pop esi
 	mov [esi + EAXREG - P_STACKBASE], eax
 	cli
 	ret
@@ -243,9 +246,12 @@ save:
 	push es
 	push fs
 	push gs
+	mov esi, edx
 	mov dx, ss
 	mov ds, dx
 	mov es, dx
+	mov fs, dx
+	mov edx, esi
 	mov esi, esp
 	inc dword [k_reenter]
 	cmp dword [k_reenter], 0

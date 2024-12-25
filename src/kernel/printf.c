@@ -7,6 +7,7 @@ int printf(const char* fmt, ...)
 	char buf[256];
 	va_list arg = (char*)&fmt + 4;
 	i = vsprintf(buf, fmt, arg);
-	write(buf, i);
+	buf[i] = 0;
+	printx(buf);
 	return i;
 }

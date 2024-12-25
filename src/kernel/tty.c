@@ -11,6 +11,7 @@
 #include "../include/keyboard.h"
 #include "../include/tty.h"
 #include "../include/global.h"
+#include "../include/color.h"
 
 #define TTY_FIRST	(tty_table)
 #define TTY_END		(tty_table + NR_CONSOLES)
@@ -105,6 +106,56 @@ PUBLIC void tty_write(struct tty* p_tty, char* buf, int len)
 PUBLIC int syscall_write(char* buf, int len, struct process* p_proc)
 {
 	tty_write(&tty_table[p_proc->nr_tty], buf, len);
+	return 0;
+}
+
+PUBLIC int syscall_printx(int _unused1, int _unused2, char* s, struct process* p_proc)
+{
+	const char* p;
+	char ch;
+	char reenter_err[] = "? k_reenter is incorrect for unknown reason";
+	reenter_err[0] = MAG_CH_PANIC;
+	if (k_reenter == 0)
+	{
+		p = va2la(proc2pid(p_proc), s);
+	}
+	else if (k_reenter > 0)
+	{
+		p = s;
+	}
+	else
+	{
+		p = reenter_err;
+	}
+	if ((*p == MAG_CH_PANIC) || (*p == MAG_CH_ASSERT && p_proc_ready < &proc_table[NR_SYSU_PROCS]))
+	{
+		disable_int();
+		char* v = (char*)VMEM_SIZE;
+		const char* q = p + 1;
+		while (v < (char*)(VMEM_BASE + VMEM_SIZE))
+		{
+			*v++ = *q++;
+			*v++ = RED;
+			if (!*q)
+			{
+				while (((int)v - VMEM_BASE) % (SCREEN_WIDTH * 16))
+				{
+					v++;
+					*v++ = MAKE_COLOR(BRIGHT, BLACK);
+				}
+				q = p + 1;
+			}
+		}
+		__asm__ __volatile__("hlt");
+	}
+	while ((ch = *p++) != 0)
+	{
+		if (ch == MAG_CH_PANIC || ch == MAG_CH_ASSERT)
+		{
+			continue;
+		}
+		out_char(tty_table[p_proc->nr_tty].p_console, ch);
+	}
 	return 0;
 }
 

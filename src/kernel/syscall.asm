@@ -2,32 +2,26 @@
 
 INT_VECTOR_SYSCALL equ 0x30
 
-_NR_get_ticks equ 0
-_NR_write equ 1
+_NR_printx      equ 0
+_NR_sendrec     equ 1
 
 ; 导出函数
-global get_ticks
-global write
+global printx
+global sendrec
 
 bits 32
 [SECTION .text]
-; PUBLIC int get_ticks();
-get_ticks:
-	mov eax, _NR_get_ticks
+; PUBLIC int printx(char* str);
+printx:
+	mov eax, _NR_printx
+	mov edx, [esp + 4]
 	int INT_VECTOR_SYSCALL
-	ret
+    ret
 
-; PUBLIC void write(char* buf, int len);
-write:
-	mov eax, _NR_write
-	mov ebx, [esp + 4]
-	mov ecx, [esp + 8]
-	int INT_VECTOR_SYSCALL
-	ret
-
+; PUBLIC int sendrec(int function, int src_dst, struct message* p_msg);
 sendrec:
 	mov eax, _NR_sendrec
-	mov ebp, [esp + 4]
+	mov ebx, [esp + 4]
 	mov ecx, [esp + 8]
 	mov edx, [esp + 12]
 	int INT_VECTOR_SYSCALL

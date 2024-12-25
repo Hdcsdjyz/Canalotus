@@ -151,7 +151,9 @@ struct tss
 #define INDEX_LDT_FIRST		5
 
 /* 进程 */
-#define LDT_SIZE 2
+#define LDT_SIZE		2
+#define INDEX_LDT_C		0
+#define INDEX_LDT_RW	1
 
 /* 由线性地址求绝对地址 */
 #define vir2phys(seg_base, vir) (u32)((u32)(seg_base) + (u32)(vir))

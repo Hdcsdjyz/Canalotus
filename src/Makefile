@@ -22,9 +22,11 @@ OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
 	  $(INTERMEDIATE_FILE)kernel/console.o\
 	  $(INTERMEDIATE_FILE)kernel/printf.o\
 	  $(INTERMEDIATE_FILE)kernel/vsprintf.o\
+	  $(INTERMEDIATE_FILE)kernel/sys.o\
 	  $(INTERMEDIATE_FILE)lib/klib.o\
 	  $(INTERMEDIATE_FILE)lib/kliba.o\
 	  $(INTERMEDIATE_FILE)lib/string.o\
+	  $(INTERMEDIATE_FILE)lib/misc.o\
 
 # 编译器&链接器
 ASM = nasm
@@ -122,6 +124,9 @@ $(INTERMEDIATE_FILE)kernel/vsprintf.o: kernel/vsprintf.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)lib/misc.o: lib/misc.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/sys.o: kernel/sys.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

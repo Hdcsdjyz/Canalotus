@@ -23,6 +23,7 @@ PUBLIC int kernel_main()
 	u8 privilege;
 	u8 rpl;
 	u32 eflags;
+	int prio;
 	for (int i = 0; i < NR_SYSU_PROCS + NR_USER_PROCS; i++)
 	{
 		if (i < NR_SYSU_PROCS)
@@ -31,6 +32,7 @@ PUBLIC int kernel_main()
 			privilege = PRIVILEGE_SYSU;
 			rpl = RPL_SYSU;
 			eflags = 0x1202;
+			prio = 15;
 		}
 		else
 		{
@@ -38,8 +40,9 @@ PUBLIC int kernel_main()
 			privilege = PRIVILEGE_USER;
 			rpl = RPL_USER;
 			eflags = 0x202;
+			prio = 5;
 		}
-		strcpy(p_proc->p_name, p_task->name);
+		strcpy(p_proc->name, p_task->name);
 		p_proc->pid = i;
 		p_proc->ldt_sel = selector_ldt;
 		memcpy(&p_proc->ldts[0], &gdt[SELECTOR_KERNEL_CS >> 3], sizeof(struct descriptor));
@@ -56,23 +59,22 @@ PUBLIC int kernel_main()
 		p_proc->regs.eip = (u32)p_task->initial_eip;
 		p_proc->regs.esp = (u32)p_task_stack;
 		p_proc->regs.eflags = eflags;
+		p_proc->nr_tty = 0;
+		p_proc->p_flags = 0;
+		p_proc->p_msg = 0;
+		p_proc->p_recvfrom = NO_PROC;
+		p_proc->p_sendto = NO_PROC;
+		p_proc->has_int_msg = 0;
+		p_proc->q_sending = 0;
+		p_proc->next_sending = 0;
+		p_proc->ticks = p_proc->priority = prio;
 		p_task_stack -= p_task->stacksize;
 		p_proc++;
 		p_task++;
 		selector_ldt += 1 << 3;
 	}
-	proc_table[0].ticks = proc_table[0].priority = 5;
-	proc_table[1].ticks = proc_table[1].priority = 20;
-	proc_table[2].ticks = proc_table[2].priority = 20;
-	proc_table[3].ticks = proc_table[3].priority = 20;
-
-	proc_table[1].nr_tty = 0;
-	proc_table[2].nr_tty = 1;
-	proc_table[3].nr_tty = 2;
-
 	k_reenter = 0;
 	ticks = 0;
-
 	p_proc_ready = proc_table;
 	/* 设置中断程序 */
 	init_clock();
@@ -88,7 +90,7 @@ void TestA()
 {
 	while (1)
 	{
-		printf("<A:%x>", get_ticks());
+		printf("<A:%d>", get_ticks());
 		milli_delay(100);
 	}
 }
@@ -97,7 +99,7 @@ void TestB()
 {
 	while (1)
 	{
-		printf("<B:%x>", get_ticks());
+		printf("<B:%d>", get_ticks());
 		milli_delay(100);
 	}
 }
@@ -106,7 +108,27 @@ void TestC()
 {
 	while (1)
 	{
-		printf("<C:%x>", get_ticks());
+		printf("<C:%d>", get_ticks());
 		milli_delay(100);
 	}
+}
+
+PUBLIC void panic(const char* fmt, ...)
+{
+	int i;
+	char buf[256];
+	va_list arg = (char*)&fmt + 4;
+	i = vsprintf(buf, fmt, arg);
+	printf("%c panic!! %s",
+		MAG_CH_PANIC, buf);
+	__asm__ __volatile__("ud2");
+}
+
+PUBLIC int get_ticks()
+{
+	struct message msg;
+	reset_msg(&msg);
+	msg.type = GET_TICKS;
+	send_recv(BOTH, TASK_SYS, &msg);
+	return msg.RETVAL;
 }

@@ -17,6 +17,7 @@ PUBLIC char task_stack[STACK_SIZE_TOTAL];
 
 PUBLIC struct task sysu_proc_table[NR_SYSU_PROCS] = {
 	{sys_tty, STACK_SIZE_SYS_TTY,"tty"},
+	{sys_sys, STACK_SIZE_SYS_SYS,"sys"}
 };
 
 PUBLIC struct task user_proc_table[NR_USER_PROCS] = {
@@ -29,8 +30,8 @@ PUBLIC struct task user_proc_table[NR_USER_PROCS] = {
 /* 中断 */
 PUBLIC irq_handler irq_table[NR_IRQ];
 PUBLIC syscall syscall_table[NR_SYSCALL] = {
-	syscall_get_ticks,
-	syscall_write
+	syscall_printx,
+	syscall_sendrec
 };
 
 /* 终端 */
