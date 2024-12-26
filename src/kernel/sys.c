@@ -1,3 +1,11 @@
+/***
+ * @file sys.c
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version build26
+ * @brief 微内核消息机制
+ ***/
+
 #include "../include/const.h"
 #include "../include/proto.h"
 #include "../include/global.h"

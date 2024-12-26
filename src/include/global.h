@@ -2,7 +2,7 @@
  * @file global.h
  * @author Lhxl
  * @date 2024-12-21
- * @version 1.0
+ * @version build26
  * @brief 全局变量定义
  ***/
 

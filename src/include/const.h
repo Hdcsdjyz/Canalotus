@@ -1,8 +1,8 @@
 /***
  * @file const.h
  * @author Lhxl
- * @date 2024-12-21
- * @version 1.0
+ * @date 2024-12-26
+ * @version build26
  * @brief 常量定义
  ***/
 
@@ -163,13 +163,13 @@ enum msgtype
 #define INVALID_INODE	0
 #define ROOT_INODE		1
 /* 硬盘 */
-#define MAX_DRIVERS			2
-#define NR_PART_PER_DRIVE	4
-#define NR_SUB_PER_PART		16
-#define NR_SUB_PER_DRIVE	(NR_SUB_PER_PART * NR_PART_PER_DRIVE)
-#define NR_PRIM_PER_DRIVE	(NR_PART_PER_DRIVE + 1)
-#define MAX_PRIM			(MAX_DRIVERS * NR_PRIM_PER_DRIVE - 1)
-#define MAX_SUBPARTITIONS	(NR_SUB_PER_DRIVE * MAX_DRIVERS)
+#define MAX_DRIVERS			2	// 最大硬盘数
+#define NR_PART_PER_DRIVE	4	// 每个硬盘最大主分区数
+#define NR_SUB_PER_PART		16	// 每个扩展分区最大逻辑分区数
+#define NR_SUB_PER_DRIVE	(NR_SUB_PER_PART * NR_PART_PER_DRIVE)	// 每个硬盘最大逻辑分区数
+#define NR_PRIM_PER_DRIVE	(NR_PART_PER_DRIVE + 1)					//
+#define MAX_PRIM			(MAX_DRIVERS * NR_PRIM_PER_DRIVE - 1)	// 最大总分区数
+#define MAX_SUBPARTITIONS	(NR_SUB_PER_DRIVE * MAX_DRIVERS)		// 最大逻辑分区数
 /* 分区类型 */
 #define P_PRIMARY		0
 #define P_EXTENDED		1

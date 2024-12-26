@@ -1,3 +1,11 @@
+/***
+ * @file vsprintf.c
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version build26
+ * @brief vsprintf
+ ***/
+
 #include "../include/type.h"
 #include "../include/proto.h"
 #include "../include/string.h"

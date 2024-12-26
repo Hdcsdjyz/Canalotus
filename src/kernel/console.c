@@ -1,3 +1,11 @@
+/***
+ * @file console.c
+ * @author Lhxl
+ * @date 2024-12-21
+ * @version build26
+ * @brief 控制台
+ ***/
+
 #include "../include/proto.h"
 #include "../include/global.h"
 #include "../include/color.h"

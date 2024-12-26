@@ -2,7 +2,7 @@
  * @file keymap.h
  * @author Lhxl
  * @date 2024-12-21
- * @version 1.0
+ * @version build26
  * @brief 键盘按键映射
  ***/
 

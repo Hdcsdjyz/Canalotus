@@ -1,8 +1,8 @@
 /***
  * @file global.c
  * @author Lhxl
- * @date 2024-12-21
- * @version 1.0
+ * @date 2024-12-26
+ * @version build26
  * @brief 全局数组定义
  ***/
 
@@ -39,3 +39,16 @@ PUBLIC syscall syscall_table[NR_SYSCALL] = {
 /* 终端 */
 PUBLIC struct tty tty_table[NR_CONSOLES];
 PUBLIC struct console console_table[NR_CONSOLES];
+
+/***
+ * @struct dev_drv_map
+ * @brief 驱动程序表
+ ***/
+struct dev_drv_map dd_map[] = {
+	{INVALID_DRIVER},
+	{INVALID_DRIVER},
+	{INVALID_DRIVER},
+	{SYSPROC_HD},
+	{SYSPROC_TTY},
+	{INVALID_DRIVER}
+}

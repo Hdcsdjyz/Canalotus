@@ -2,7 +2,7 @@
  * @file keyboard.c
  * @author Lhxl
  * @date 2024-12-21
- * @version 1.0
+ * @version build26
  * @brief 键盘输入处理程序
  ***/
 

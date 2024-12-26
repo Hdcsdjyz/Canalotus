@@ -2,7 +2,7 @@
  * @file proto.h
  * @author Lhxl
  * @date 2024-12-21
- * @version 1.0
+ * @version build26
  * @brief 全局函数声明
  ***/
 

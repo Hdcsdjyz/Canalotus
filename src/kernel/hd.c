@@ -2,7 +2,7 @@
  * @file hd.c
  * @author Lhxl
  * @date 2024-12-25
- * @version 1.0
+ * @version build26
  * @brief 硬盘驱动
  ***/
 #include "../include/const.h"

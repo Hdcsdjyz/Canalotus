@@ -2,7 +2,7 @@
  * @file console.h
  * @author Lhxl
  * @data 2024-12-22
- * @version 1.0
+ * @version build26
  * @brief 控制台
  ***/
 
