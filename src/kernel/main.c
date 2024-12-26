@@ -90,7 +90,7 @@ void TestA()
 {
 	while (1)
 	{
-		printf("<A:%d>", get_ticks());
+		//printf("<A:%d>", get_ticks());
 		milli_delay(100);
 	}
 }
@@ -99,7 +99,7 @@ void TestB()
 {
 	while (1)
 	{
-		printf("<B:%d>", get_ticks());
+		//printf("<B:%d>", get_ticks());
 		milli_delay(100);
 	}
 }
@@ -108,7 +108,7 @@ void TestC()
 {
 	while (1)
 	{
-		printf("<C:%d>", get_ticks());
+		//printf("<C:%d>", get_ticks());
 		milli_delay(100);
 	}
 }
@@ -129,6 +129,6 @@ PUBLIC int get_ticks()
 	struct message msg;
 	reset_msg(&msg);
 	msg.type = GET_TICKS;
-	send_recv(BOTH, TASK_SYS, &msg);
+	send_recv(BOTH, SYSPROC_SYS, &msg);
 	return msg.RETVAL;
 }

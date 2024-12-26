@@ -54,6 +54,8 @@ PUBLIC void* va2la(int pid, void* va);
 PUBLIC int ldt_seg_linear(struct process* p, int idx);
 PUBLIC void reset_msg(struct message* p);
 PUBLIC int send_recv(int function, int src_dst, struct message* msg);
+PUBLIC void dump_proc(struct process* p);
+PUBLIC void dump_msg(const char * title, struct message* msg);
 
 /* kernel/keyboard.c */
 PUBLIC void init_keyboard();
@@ -84,6 +86,10 @@ int printf(const char* format, ...);
 /* kernel/sys.c */
 PUBLIC void sys_sys();
 
+/* kernel/hd.c */
+PUBLIC void sys_hd();
+PUBLIC void hd_handler();
+
 /* lib/kliba.asm */
 PUBLIC void disp_str(char* str);
 PUBLIC void out_byte(u16 port, u8 value);
@@ -93,6 +99,9 @@ PUBLIC void disable_irq(int irq);
 PUBLIC void enable_irq(int irq);
 PUBLIC void disable_int();
 PUBLIC void enable_int();
+void port_read(u16 port, void* buf, int n);
+void port_write(u16 port, void* buf, int n);
+PUBLIC void inform_int(int proc_nr);
 
 /* lib/klib.c */
 PUBLIC char* itoa(char* str, int num);
@@ -101,5 +110,8 @@ PUBLIC void disp_int(int input);
 /* lib/misc.c */
 PUBLIC void assertion_failure(char* exp, char* file, int line);
 PUBLIC void spin(char* func_name);
+
+/* fs/main.c */
+PUBLIC void sys_fs();
 
 #endif

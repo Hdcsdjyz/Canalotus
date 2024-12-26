@@ -12,7 +12,10 @@
 #include "type.h"
 #include "protect.h"
 
-/* 进程堆栈 */
+/***
+ * @struct stackframe
+ * @brief 进程的寄存器帧
+ ***/
 struct stackframe
 {
 	u32 gs;
@@ -50,22 +53,26 @@ struct process
 	char name[16];						///< 进程名称
 	int p_flags;						///< 运行标志
 	struct message* p_msg;				///< 信息
-	int p_recvfrom;						///<
-	int p_sendto;						///<
-	int has_int_msg;					///<
+	int p_recvfrom;						///< 当前发送信息至此进程的进程
+	int p_sendto;						///< 当前将要发送消息至的进程
+	int has_int_msg;					///< 是否中断
 	struct process* q_sending;			///< 等待发送信息至此进程的进程
 	struct process* next_sending;		///< 下一个将要发送消息至的进程
 	u8 nr_tty;							///< 控制台号
 };
 
+/***
+ * @struct task
+ * @brief 进程
+ ***/
 struct task
 {
-	task_f initial_eip;
-	int stacksize;
-	char name[32];
+	task_f initial_eip;		///< 进程的起始地址
+	int stacksize;			///< 进程的堆栈大小
+	char name[32];			///< 进程的名称
 };
 
-#define NR_SYSU_PROCS 2 ///< 系统进程数
+#define NR_SYSU_PROCS 4 ///< 系统进程数
 #define NR_USER_PROCS 3 ///< 用户进程数
 
 #define FIRST_PROC	proc_table[0]
@@ -77,12 +84,16 @@ struct task
 
 #define STACK_SIZE_SYS_TTY 0x8000
 #define STACK_SIZE_SYS_SYS 0x8000
+#define STACK_SIZE_SYS_HD 0x8000
+#define STACK_SIZE_SYS_FS 0x8000
 
 #define STACK_SIZE_TOTAL (STACK_SIZE_TESTA\
 						+ STACK_SIZE_TESTB\
 						+ STACK_SIZE_TESTC\
 						+ STACK_SIZE_SYS_TTY\
-						+ STACK_SIZE_SYS_SYS) ///< 进程堆栈总大小
+						+ STACK_SIZE_SYS_SYS\
+						+ STACK_SIZE_SYS_HD\
+						+ STACK_SIZE_SYS_FS) ///< 进程堆栈总大小
 
 #define proc2pid(x) (x - proc_table)
 

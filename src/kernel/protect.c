@@ -180,8 +180,8 @@ PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 priv
 	p_gate->offset_low = base & 0xFFFF;
 	p_gate->selector = SELECTOR_KERNEL_CS;
 	p_gate->dcount = 0;
-	p_gate->attr = desc_type | (privilege << 5);
-	p_gate->offset_high = (base >> 16) & 0xFFFF;
+	p_gate->attr = desc_type | privilege << 5;
+	p_gate->offset_high = base >> 16 & 0xFFFF;
 }
 
 /*- 初始化段描述符 */
@@ -189,9 +189,9 @@ PRIVATE void init_descriptor(struct descriptor* p_desc, u32 base, u32 limit, u16
 {
 	p_desc->limit_low = limit & 0xFFFF;
 	p_desc->base_low = base & 0xFFFF;
-	p_desc->base_mid = (base >> 16) & 0xFF;
+	p_desc->base_mid = base >> 16 & 0xFF;
 	p_desc->attr1 = attribute & 0xFF;
-	p_desc->limit_high_attr2 = ((limit >> 16) & 0x0F) | ((attribute >> 8 )& 0xF0);
-	p_desc->base_high = (base >> 24) & 0xFF;
+	p_desc->limit_high_attr2 = limit >> 16 & 0x0F | attribute >> 8 & 0xF0;
+	p_desc->base_high = base >> 24 & 0xFF;
 }
 /* ^^^ 本地函数 ^^^ */

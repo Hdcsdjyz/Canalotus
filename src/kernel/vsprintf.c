@@ -21,12 +21,12 @@ int vsprintf(char* buf, const char* fmt, va_list args)
 		}
 		align_nr = 0;
 		fmt++;
-		if (*fmt != '%')
+		if (*fmt == '%')
 		{
 			*p++ = *fmt;
 			continue;
 		}
-		else if (*fmt == '0')
+		if (*fmt == '0')
 		{
 			cs = '0';
 			fmt++;
@@ -72,7 +72,7 @@ int vsprintf(char* buf, const char* fmt, va_list args)
 		default:
 			break;
 		}
-		for (int k = 0; align_nr > strlen(inner_buf) ? align_nr - strlen(inner_buf) : 0; k++)
+		for (int k = 0; k < (align_nr > strlen(inner_buf) ? align_nr - strlen(inner_buf) : 0); k++)
 		{
 			*p++ = cs;
 		}

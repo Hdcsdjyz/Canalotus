@@ -14,6 +14,8 @@ global disable_irq
 global enable_irq
 global disable_int
 global enable_int
+global port_read
+global port_write
 
 ; void disp_str(char* str);
 ; 在屏幕上打印str
@@ -158,10 +160,32 @@ enable_8:
 	popf
 	ret
 
+; void disable_int();
 disable_int:
 	cli
 	ret
 
+; void enable_int();
 enable_int:
 	sti
 	ret
+
+; void port_read(u16 port, void* buf, int n);
+port_read:
+	mov edx, [esp + 4]
+	mov edi, [esp + 8]
+	mov ecx, [esp + 12]
+	shr ecx, 1
+	cld
+	rep insw
+	ret
+
+; void port_write(u16 port, void* buf, int n);
+port_write:
+	mov edx, [esp + 4]
+    mov edi, [esp + 8]
+    mov ecx, [esp + 12]
+    shr ecx, 1
+    cld
+    rep outsw
+    ret

@@ -23,10 +23,12 @@ OBJ = $(INTERMEDIATE_FILE)kernel/kernel.o\
 	  $(INTERMEDIATE_FILE)kernel/printf.o\
 	  $(INTERMEDIATE_FILE)kernel/vsprintf.o\
 	  $(INTERMEDIATE_FILE)kernel/sys.o\
+	  $(INTERMEDIATE_FILE)kernel/hd.o\
 	  $(INTERMEDIATE_FILE)lib/klib.o\
 	  $(INTERMEDIATE_FILE)lib/kliba.o\
 	  $(INTERMEDIATE_FILE)lib/string.o\
 	  $(INTERMEDIATE_FILE)lib/misc.o\
+	  $(INTERMEDIATE_FILE)fs/main.o\
 
 # 编译器&链接器
 ASM = nasm
@@ -50,9 +52,11 @@ make_file:
 	mkdir -p -m 700 ../Canalotus/Canalotus
 	mkdir -p -m 700 ../Canalotus/Canalotus/boot
 	mkdir -p -m 700 ../Canalotus/Canalotus/kernel
+	mkdir -p -m 700 ../Canalotus/Canalotus/fs
 	mkdir -p -m 700 ../Canalotus/intermediate
 	mkdir -p -m 700 ../Canalotus/intermediate/kernel
 	mkdir -p -m 700 ../Canalotus/intermediate/lib
+	mkdir -p -m 700 ../Canalotus/intermediate/fs
 	mkdir -p -m 700 ../Canalotus/img
 
 build: $(BOOT) $(KERNEL)
@@ -127,6 +131,12 @@ $(INTERMEDIATE_FILE)lib/misc.o: lib/misc.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)kernel/sys.o: kernel/sys.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)kernel/hd.o: kernel/hd.c
+	$(C) $(C_FLAGS) -o $@ $<
+
+$(INTERMEDIATE_FILE)fs/main.o: fs/main.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(KERNEL): $(OBJ)

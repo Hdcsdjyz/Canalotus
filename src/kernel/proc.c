@@ -10,6 +10,7 @@
 #include "../include/proto.h"
 #include "../include/global.h"
 #include "../include/string.h"
+#include "../include/color.h"
 
 PRIVATE void block(struct process* p_proc);
 PRIVATE void unblock(struct process* p_proc);
@@ -23,7 +24,7 @@ PUBLIC void schedule()
 	int greatest_ticks = 0;
 	while (!greatest_ticks)
 	{
-		for (p = proc_table; p < proc_table + NR_SYSU_PROCS + NR_USER_PROCS; p++)
+		for (p = &FIRST_PROC; p <= &LAST_PROC; p++)
 		{
 			if (p->p_flags == 0)
 			{
@@ -36,7 +37,7 @@ PUBLIC void schedule()
 		}
 		if (!greatest_ticks)
 		{
-			for (p = proc_table; p < proc_table + NR_SYSU_PROCS + NR_USER_PROCS; p++)
+			for (p = &FIRST_PROC; p <= &LAST_PROC; p++)
 			{
 				if (p->p_flags == 0)
 				{
@@ -57,10 +58,10 @@ PUBLIC void schedule()
 PUBLIC int syscall_sendrec(int function, int src_dst, struct message* msg, struct process* p_proc)
 {
 	assert(k_reenter == 0);
-	assert((src_dst >= 0 && src_dst < NR_SYSU_PROCS + NR_USER_PROCS) || src_dst ==ANY || src_dst == INTERRUPT);
+	assert((src_dst >= 0 && src_dst < NR_SYSU_PROCS + NR_USER_PROCS) || src_dst == ANY || src_dst == INTERRUPT);
 	int ret = 0;
 	int caller = proc2pid(p_proc);
-	struct message* mla = (struct message*)va2la(caller, msg);
+	struct message* mla = va2la(caller, msg);
 	mla->source = caller;
 	assert(mla->source != src_dst);
 	if (function == SEND)
@@ -135,6 +136,99 @@ PUBLIC int send_recv(int function, int src_dst, struct message* msg)
 		break;
 	}
 	return ret;
+}
+
+PUBLIC void dump_proc(struct process* p)
+{
+	char info[STR_DEFAULT_LEN];
+	int text_color = MAKE_COLOR(GREEN, RED);
+	int dump_len = sizeof(struct process);
+	out_byte(CRTC_ADDR_REG, START_ADDR_H);
+	out_byte(CRTC_DATA_REG, 0);
+	out_byte(CRTC_ADDR_REG, START_ADDR_L);
+	out_byte(CRTC_DATA_REG, 0);
+	sprintf(info, "byte dump of proc_table[%d]:\n", p - proc_table);
+	disp_color_str(info, text_color);
+	for (int i = 0; i < dump_len; i++)
+	{
+		sprintf(info, "%x.", ((unsigned char *)p)[i]);
+		disp_color_str(info, text_color);
+	}
+	disp_color_str("\n\n", text_color);
+	sprintf(info, "ANY: 0x%x.\n", ANY);
+	disp_color_str(info, text_color);
+	sprintf(info, "NO_PROC: 0x%x.\n", NO_PROC);
+	disp_color_str(info, text_color);
+	disp_color_str("\n", text_color);
+	sprintf(info, "ldt_sel: 0x%x.  ", p->ldt_sel);
+	disp_color_str(info, text_color);
+	sprintf(info, "ticks: 0x%x.  ", p->ticks);
+	disp_color_str(info, text_color);
+	sprintf(info, "priority: 0x%x.  ", p->priority);
+	disp_color_str(info, text_color);
+	sprintf(info, "pid: 0x%x.  ", p->pid);
+	disp_color_str(info, text_color);
+	sprintf(info, "name: %s.  ", p->name);
+	disp_color_str(info, text_color);
+	disp_color_str("\n", text_color);
+	sprintf(info, "p_flags: 0x%x.  ", p->p_flags);
+	disp_color_str(info, text_color);
+	sprintf(info, "p_recvfrom: 0x%x.  ", p->p_recvfrom);
+	disp_color_str(info, text_color);
+	sprintf(info, "p_sendto: 0x%x.  ", p->p_sendto);
+	disp_color_str(info, text_color);
+	sprintf(info, "nr_tty: 0x%x.  ", p->nr_tty);
+	disp_color_str(info, text_color);
+	disp_color_str("\n", text_color);
+	sprintf(info, "has_int_msg: 0x%x.  ", p->has_int_msg);
+	disp_color_str(info, text_color);
+}
+
+PUBLIC void dump_msg(const char * title, struct message* msg)
+{
+	int packed = 0;
+	printf("{%s}<0x%x>{%ssrc:%s(%d),%stype:%d,%s(0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x)%s}%s",
+		   title,
+		   (int)msg,
+		   packed ? "" : "\n        ",
+		   proc_table[msg->source].name,
+		   msg->source,
+		   packed ? " " : "\n        ",
+		   msg->type,
+		   packed ? " " : "\n        ",
+		   msg->u.m3.m3i1,
+		   msg->u.m3.m3i2,
+		   msg->u.m3.m3i3,
+		   msg->u.m3.m3i4,
+		   (int)msg->u.m3.m3p1,
+		   (int)msg->u.m3.m3p2,
+		   packed ? "" : "\n",
+		   packed ? "" : "\n"
+		);
+}
+
+PUBLIC void inform_int(int proc_nr)
+{
+	struct process* p = proc_table + proc_nr;
+	if (p->p_flags & RECEIVING && (p->p_recvfrom == INTERRUPT || p->p_recvfrom == ANY))
+	{
+		p->p_msg->source = INTERRUPT;
+		p->p_msg->type = HARD_INT;
+		p->p_msg = 0;
+		p->has_int_msg = 0;
+		p->p_flags &= ~RECEIVING;
+		p->p_recvfrom = NO_PROC;
+		assert(p->p_flags == 0);
+		unblock(p);
+		assert(p->p_flags == 0);
+		assert(p->p_msg == 0);
+		assert(p->p_recvfrom == NO_PROC);
+		assert(p->p_sendto == NO_PROC);
+	}
+	else
+	{
+		p->has_int_msg = 1;
+	}
 }
 
 /**********/
@@ -214,7 +308,7 @@ PRIVATE int msg_receive(struct process* cnt, int src, struct message* _msg)
 	struct process* prev = 0;
 	int copyok = 0;
 	assert(proc2pid(p_who_wanna_recv) != src);
-	if ((p_who_wanna_recv->has_int_msg) && ((src == ANY) || (src == INTERRUPT)))
+	if (p_who_wanna_recv->has_int_msg && (src == ANY || src == INTERRUPT))
 	{
 		struct message msg;
 		reset_msg(&msg);

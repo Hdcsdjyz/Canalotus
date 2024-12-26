@@ -34,6 +34,7 @@ add_executable(kernel src/kernel/kernel.asm
         src/include/string.h
         src/include/tty.h
         src/include/type.h
+        src/include/hd.h
 )
 
 add_library(start.o OBJECT src/kernel/start.c)
@@ -50,10 +51,12 @@ add_library(console.o OBJECT src/kernel/console.c)
 add_library(printf.o OBJECT src/kernel/printf.c)
 add_library(vsprintf.o OBJECT src/kernel/vsprintf.c)
 add_library(sys.o OBJECT src/kernel/sys.c)
+add_library(hd.o OBJECT src/kernel/hd.c)
 add_library(kliba.o OBJECT src/lib/kliba.asm)
 add_library(klib.o OBJECT src/lib/klib.c)
 add_library(misc.o OBJECT src/lib/misc.c)
 add_library(string.o OBJECT src/lib/string.asm)
+add_library(fs_main.o OBJECT src/fs/main.c)
 
 include_directories(src/include)
 

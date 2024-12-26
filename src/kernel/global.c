@@ -17,7 +17,9 @@ PUBLIC char task_stack[STACK_SIZE_TOTAL];
 
 PUBLIC struct task sysu_proc_table[NR_SYSU_PROCS] = {
 	{sys_tty, STACK_SIZE_SYS_TTY,"tty"},
-	{sys_sys, STACK_SIZE_SYS_SYS,"sys"}
+	{sys_sys, STACK_SIZE_SYS_SYS,"sys"},
+	{sys_hd, STACK_SIZE_SYS_HD, "hd"},
+	{sys_fs, STACK_SIZE_SYS_FS, "fs"}
 };
 
 PUBLIC struct task user_proc_table[NR_USER_PROCS] = {
