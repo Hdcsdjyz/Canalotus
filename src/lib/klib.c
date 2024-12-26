@@ -1,3 +1,11 @@
+/***
+ * @file klib.c
+ * @author Lhxl
+ * @date 2024-12-26
+ * @version build27
+ * @brief klib
+ ***/
+
 #include "../include/const.h"
 #include "../include/proto.h"
 

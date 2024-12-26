@@ -1,3 +1,11 @@
+/***
+ * @file misc.c
+ * @author Lhxl
+ * @date 2024-12-26
+ * @version build27
+ * @brief misc
+ ***/
+
 #include "../include/const.h"
 #include "../include/proto.h"
 

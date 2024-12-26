@@ -173,6 +173,7 @@ ALIGN 16
 hwint01:
 	hwint_master 1
 ALIGN 16
+; 从
 hwint02:
 	hwint_master 2
 ALIGN 16
@@ -230,6 +231,7 @@ hwint12:
 ALIGN 16
 hwint13:
 	hwint_slave 13
+; WIN_ATA
 ALIGN 16
 hwint14:
 	hwint_slave 14

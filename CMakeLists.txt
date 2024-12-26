@@ -35,6 +35,8 @@ add_executable(kernel src/kernel/kernel.asm
         src/include/tty.h
         src/include/type.h
         src/include/hd.h
+        src/include/config.h
+        src/include/fs.h
 )
 
 add_library(start.o OBJECT src/kernel/start.c)

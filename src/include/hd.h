@@ -1,8 +1,8 @@
 /***
- * @file global.c
+ * @file hd.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-26
+ * @version build27
  * @brief 硬盘
  ***/
 
@@ -27,7 +27,7 @@ struct part_ent
 	u8 end_sector;			///< 结束扇区，同上
 	u8 end_cylinder;		///< 结束柱道，同上
 	u32 start_sect;			///<
-	u32 nr_sect;			///< 此分区的扇区数
+	u32 nr_sects;			///< 此分区的扇区数
 };
 
 #define REG_DATA		0X1F0
@@ -71,8 +71,8 @@ struct hd_cmd
  ***/
 struct part_info
 {
-	u32 base;
-	u32 size;
+	u32 base;	///< 分区基地址
+	u32 size;	///< 分区扇区数
 };
 
 /***
@@ -81,9 +81,9 @@ struct part_info
  ***/
 struct hd_info
 {
-	int open_cnt;
-	struct part_info primary[NR_PRIM_PER_DRIVE];
-	struct part_info logical[NR_SUB_PER_DRIVE];
+	int open_cnt;	///< 打开次数
+	struct part_info primary[NR_PRIM_PER_DRIVE];	///< 主分区
+	struct part_info logical[NR_SUB_PER_DRIVE];		///< 逻辑分区
 };
 
 #define HD_TIMEOUT					10000

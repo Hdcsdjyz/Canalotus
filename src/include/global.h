@@ -1,8 +1,8 @@
 /***
  * @file global.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-26
+ * @version build27
  * @brief 全局变量定义
  ***/
 
@@ -15,6 +15,7 @@
 #include "proc.h"
 #include "console.h"
 #include "tty.h"
+#include "fs.h"
 
 #ifdef GLOBAL_VAR_HERE
 #undef EXTERN
@@ -51,5 +52,12 @@ EXTERN int ticks;
 extern struct tty tty_table[];
 extern struct console console_table[];
 EXTERN u8 nr_current_console;
+
+/**/
+extern struct dev_drv_map dd_map[];
+
+/* 文件系统 */
+extern u8* fsbuf;
+extern const int FSBUF_SIZE;
 
 #endif

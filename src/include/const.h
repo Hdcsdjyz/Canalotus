@@ -2,7 +2,7 @@
  * @file const.h
  * @author Lhxl
  * @date 2024-12-26
- * @version build26
+ * @version build27
  * @brief 常量定义
  ***/
 
@@ -11,6 +11,8 @@
 
 #include "protect.h"
 #include "proc.h"
+#include "config.h"
+
 
 /* 可见性 */
 #define PUBLIC
@@ -148,16 +150,13 @@ enum msgtype
 #define DEV_CHAR_TTY	4
 #define DEV_SCSI		5
 
-#define MAJOR_SHIFT 8
-#define MAKE_DEV(a,b) ((a << MAJOR_SHIFT) | b)
-#define MAJOR(x) ((x >> MAJOR_SHIFT) & 0xFF)
-#define MINOR(x) (x & 0xFF)
+#define MAJOR_SHIFT		8
+#define MAKE_DEV(a,b)	((a << MAJOR_SHIFT) | b)
+#define MAJOR(x)		((x >> MAJOR_SHIFT) & 0xFF)
+#define MINOR(x)		(x & 0xFF)
 /* 硬盘结构 */
 #define MINOR_hd1a		0x10
-#define MINOR_hd2a		0x20
-#define MINOR_hd2b		0x21
-#define MINOR_hd3a		0x30
-#define MINOR_hd4a		0x40
+#define MINOR_hd2a		(MINOR_hd1a + NR_SUB_PER_PART)
 /* 目录结构 */
 #define ROOT_DEV		MAKE_DEV(DEV_HD, MINOR_BOOT)
 #define INVALID_INODE	0
@@ -174,7 +173,7 @@ enum msgtype
 #define P_PRIMARY		0
 #define P_EXTENDED		1
 /* 分区系统标识 */
-#define CANALOTUS_PART	0x99
+#define CLFS_PART		0xB0
 #define NO_PART			0x00
 #define EXT_PART		0x05
 /* 各结构数量 */

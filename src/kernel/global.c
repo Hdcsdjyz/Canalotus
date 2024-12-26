@@ -2,7 +2,7 @@
  * @file global.c
  * @author Lhxl
  * @date 2024-12-26
- * @version build26
+ * @version build27
  * @brief 全局数组定义
  ***/
 
@@ -45,10 +45,14 @@ PUBLIC struct console console_table[NR_CONSOLES];
  * @brief 驱动程序表
  ***/
 struct dev_drv_map dd_map[] = {
-	{INVALID_DRIVER},
-	{INVALID_DRIVER},
-	{INVALID_DRIVER},
-	{SYSPROC_HD},
-	{SYSPROC_TTY},
-	{INVALID_DRIVER}
-}
+	{INVALID_DRIVER},	///< 未使用
+	{INVALID_DRIVER},	///<
+	{INVALID_DRIVER},	///<
+	{SYSPROC_HD},		///< 硬盘
+	{SYSPROC_TTY},				///< 终端
+	{INVALID_DRIVER}		///<
+};
+
+/* 文件系统 */
+PUBLIC u8* fsbuf = (u8*)0x600000;
+PUBLIC const int FSBUF_SIZE = 0x100000;
