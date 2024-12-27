@@ -1,8 +1,8 @@
 /***
  * @file proto.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-27
+ * @version build29
  * @brief 全局函数声明
  ***/
 
@@ -56,6 +56,7 @@ PUBLIC void reset_msg(struct message* p);
 PUBLIC int send_recv(int function, int src_dst, struct message* msg);
 PUBLIC void dump_proc(struct process* p);
 PUBLIC void dump_msg(const char * title, struct message* msg);
+PUBLIC void inform_int(int proc_nr);
 
 /* kernel/keyboard.c */
 PUBLIC void init_keyboard();
@@ -101,7 +102,6 @@ PUBLIC void disable_int();
 PUBLIC void enable_int();
 void port_read(u16 port, void* buf, int n);
 void port_write(u16 port, void* buf, int n);
-PUBLIC void inform_int(int proc_nr);
 
 /* lib/klib.c */
 PUBLIC char* itoa(char* str, int num);
@@ -113,5 +113,6 @@ PUBLIC void spin(char* func_name);
 
 /* fs/main.c */
 PUBLIC void sys_fs();
+PUBLIC int rw_sector(int io_type, int dev, u64 pos, int bytes, int proc_nr, void* buf);
 
 #endif

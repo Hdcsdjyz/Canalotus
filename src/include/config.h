@@ -1,8 +1,8 @@
 /***
  * @file config.h
  * @author Lhxl
- * @date 2024-12-26
- * @version build27
+ * @date 2024-12-27
+ * @version build29
  * @brief 设置
  ***/
 
@@ -10,5 +10,7 @@
 #define _CANALOTUS_CONFIG_H_
 
 #define MINOR_BOOT	MINOR_hd2a
+
+#define CL_DEBUG
 
 #endif

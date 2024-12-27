@@ -1,11 +1,12 @@
 /***
  * @file proc.c
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-27
+ * @version build29
  * @brief 进程调度
  ***/
 
+#include "../include/config.h"
 #include "../include/const.h"
 #include "../include/proto.h"
 #include "../include/global.h"
@@ -417,14 +418,20 @@ PRIVATE int deadlock(int src, int dst)
 			if (p->p_sendto == src)
 			{
 				p = proc_table + dst;
+#ifdef CL_DEBUG
 				printf("=_=%s", p->name);
+#endif
 				do
 				{
 					assert(p->p_msg);
 					p = proc_table + p->p_sendto;
+#ifdef CL_DEBUG
 					printf("->%s", p->name);
+#endif
 				} while (p != proc_table + src);
+#ifdef CL_DEBUG
 				printf("=_=");
+#endif
 				return 1;
 			}
 			p = proc_table + p->p_sendto;
