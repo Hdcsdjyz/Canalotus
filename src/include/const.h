@@ -1,8 +1,8 @@
 /***
  * @file const.h
  * @author Lhxl
- * @date 2024-12-26
- * @version build27
+ * @date 2024-12-27
+ * @version build29
  * @brief 常量定义
  ***/
 
@@ -22,6 +22,10 @@
 /* 布尔量 */
 #define TRUE	1
 #define FALSE	0
+
+/* maxmin */
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 /* 描述符 */
 #define GDT_SIZE 128
@@ -105,6 +109,7 @@ void assertion_failure(char* exp, char* file, int line);
 #define SYSPROC_TTY		0
 #define SYSPROC_SYS		1
 #define SYSPROC_HD		2
+#define SYSPROC_FS		3
 #define ANY				(NR_SYSU_PROCS + NR_USER_PROCS + 10)
 #define NO_PROC			(NR_SYSU_PROCS + NR_USER_PROCS + 20)
 /* 消息类型 */
@@ -140,7 +145,6 @@ enum msgtype
 /* 硬盘 */
 #define DIOCTL_GET_GEO		1
 #define SECTOR_SIZE			512
-#define SECTOR_BITS			(SECTOR_SIZE * 8)
 #define SECTOR_SIZE_SHIFT	9
 /* 硬件类型 */
 #define NO_DEV			0

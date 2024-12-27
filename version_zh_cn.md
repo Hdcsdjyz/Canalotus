@@ -28,4 +28,6 @@ build24　实现printf
 build25　采用微内核实现进程间通信并由此重构原有系统调用  
 　　　　 调整文件结构  
 build26　实现硬盘信息的读取  
-build27　实现文件系统CLFS（0xB0）
+build27　实现硬盘上的文件系统CLFS（0xB0）  
+build28　完善硬盘驱动  
+build29　建立文件系统
