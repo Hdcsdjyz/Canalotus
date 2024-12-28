@@ -10,7 +10,6 @@
 #define _CANALOTUS_CONST_H_
 
 #include "protect.h"
-#include "proc.h"
 #include "config.h"
 
 
@@ -89,15 +88,6 @@
 
 /* 终端 */
 #define NR_CONSOLES 3
-
-/* assert */
-#define ASSERT
-#ifdef ASSERT
-void assertion_failure(char* exp, char* file, int line);
-#define assert(exp) if(exp); else assertion_failure(#exp, __FILE__, __LINE__)
-#else
-#define assert(exp)
-#endif
 
 #define MAG_CH_PANIC	'\002'
 #define MAG_CH_ASSERT	'\003'

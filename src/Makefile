@@ -121,10 +121,10 @@ $(INTERMEDIATE_FILE)kernel/tty.o: kernel/tty.c
 $(INTERMEDIATE_FILE)kernel/console.o: kernel/console.c
 	$(C) $(C_FLAGS) -o $@ $<
 
-$(INTERMEDIATE_FILE)kernel/printf.o: kernel/printf.c
+$(INTERMEDIATE_FILE)kernel/printf.o: lib/printf.c
 	$(C) $(C_FLAGS) -o $@ $<
 
-$(INTERMEDIATE_FILE)kernel/vsprintf.o: kernel/vsprintf.c
+$(INTERMEDIATE_FILE)kernel/vsprintf.o: lib/vsprintf.c
 	$(C) $(C_FLAGS) -o $@ $<
 
 $(INTERMEDIATE_FILE)lib/misc.o: lib/misc.c

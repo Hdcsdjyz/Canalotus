@@ -1,4 +1,4 @@
-%include "../include/sconst.inc"
+%include "../include/sys/sconst.inc"
 
 INT_VECTOR_SYSCALL equ 0x30
 

@@ -1,3 +1,4 @@
+--参考(https://github.com/yyu/OrangeS)--  
 build1　 建立boot  
 build2　 建立Makefile  
 build3　 建立loader  
@@ -30,4 +31,5 @@ build25　采用微内核实现进程间通信并由此重构原有系统调用
 build26　实现硬盘信息的读取  
 build27　实现硬盘上的文件系统CLFS（0xB0）  
 build28　完善硬盘驱动  
-build29　建立文件系统
+build29　建立文件系统  
+build30　调节文件结构 

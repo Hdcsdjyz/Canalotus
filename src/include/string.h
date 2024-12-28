@@ -1,15 +1,15 @@
 /***
  * @file string.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-28
+ * @version build30
  * @brief string.h
  ***/
 
 #ifndef _CANALOTUS_STRING_H_
 #define _CANALOTUS_STRING_H_
 
-#include "const.h"
+#include "sys/const.h"
 
 /***
  * @param[out] p_dst 目标指针

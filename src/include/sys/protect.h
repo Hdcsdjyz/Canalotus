@@ -1,15 +1,15 @@
 /***
  * @file protect.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-28
+ * @version build30
  * @brief 保护模式相关定义
  ***/
 
 #ifndef _CANALOTUS_PROTECT_H_
 #define _CANALOTUS_PROTECT_H_
 
-#include "type.h"
+#include "../type.h"
 
 /***
  * @struct descriptor

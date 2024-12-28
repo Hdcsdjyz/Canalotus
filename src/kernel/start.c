@@ -1,17 +1,17 @@
 /***
  * @file start.c
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-28
+ * @version build30
  * @brief 初始化内核
  ***/
 
 #include "../include/type.h"
-#include "../include/const.h"
-#include "../include/protect.h"
-#include "../include/proto.h"
+#include "../include/sys/const.h"
+#include "../include/sys/protect.h"
+#include "../include/sys/proto.h"
 #include "../include/string.h"
-#include "../include/global.h"
+#include "../include/sys/global.h"
 
 PUBLIC void cstart()
 {

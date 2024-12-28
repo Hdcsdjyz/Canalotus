@@ -1,16 +1,15 @@
 /***
  * @file fs.h
  * @author Lhxl
- * @date 2024-12-27
- * @version build29
+ * @date 2024-12-29
+ * @version build30
  * @brief 文件系统
  ***/
 
 #ifndef _CANALOTUS_FS_H_
 #define _CANALOTUS_FS_H_
 
-#include "type.h"
-#include "global.h"
+#include "../type.h"
 
 /***
  * @struct dev_drv_map
@@ -121,7 +120,16 @@ struct dir_entry
  **/
 #define WRITE_SECT(dev, sect_nr) rw_sector(DEV_WRITE, dev, (sect_nr) * SECTOR_SIZE, SECTOR_SIZE, SYSPROC_FS, fsbuf)
 
-
+/***
+ * @struct file_desc
+ * @brief 文件描述符
+ ***/
+struct file_desc
+{
+	int fs_mode;				///< 读写模式
+	int fs_pos;					///< 当前操作位置
+	struct inode* fd_inode;		///< inode指针
+};
 
 
 
