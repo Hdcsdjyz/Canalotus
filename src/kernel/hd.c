@@ -1,8 +1,8 @@
 /***
  * @file hd.c
  * @author Lhxl
- * @date 2024-12-28
- * @version build39
+ * @date 2025-1-13
+ * @version build30
  * @brief 硬盘驱动
  ***/
 
@@ -34,6 +34,9 @@ PRIVATE struct hd_info hd_info[1];
 
 #define DRV_OF_DEV(dev) (dev <= MAX_PRIM ? dev / NR_PRIM_PER_DRIVE : (dev - MINOR_hd1a) / NR_SUB_PER_DRIVE)
 
+/***
+ * @note 硬盘驱动主函数
+ ***/
 PUBLIC void sys_hd()
 {
 	struct message msg;
@@ -72,6 +75,9 @@ PUBLIC void hd_handler(int irq)
 	inform_int(SYSPROC_HD);
 }
 
+/***
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void init_hd()
 {
 	u8* pNrDrives = (u8*)0x475;
@@ -87,9 +93,11 @@ PRIVATE void init_hd()
 	put_irq_handler(AT_WINI_IRQ, hd_handler);
 	enable_irq(CASCADE_IRQ);
 	enable_irq(AT_WINI_IRQ);
-
 }
 
+/***
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void hd_identify(int drive)
 {
 	struct hd_cmd cmd;
@@ -106,6 +114,9 @@ PRIVATE void hd_identify(int drive)
 	hd_info[drive].primary[0].size = ((int)hdinfo[61] << 16) + hdinfo[60];
 }
 
+/***
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void hd_cmd_out(struct hd_cmd *cmd)
 {
 	if (!waitfor(STATUS_BSY, 0, HD_TIMEOUT))
@@ -122,12 +133,20 @@ PRIVATE void hd_cmd_out(struct hd_cmd *cmd)
 	out_byte(REG_CMD, cmd->command);
 }
 
+/***
+ * @note <Ring1, PRIVATE>\n
+ * 等待中断结束
+ ***/
 PRIVATE void interrupt_wait()
 {
 	struct message msg;
 	send_recv(RECEIVE, INTERRUPT, &msg);
 }
 
+/***
+ * @param[in] hd_info 硬盘硬件信息
+ * @note <Ring1, PRIVATE, DEBUG>
+ ***/
 #ifdef CL_DEBUG
 PRIVATE void print_identify_info(u16* hd_info)
 {
@@ -161,6 +180,15 @@ PRIVATE void print_identify_info(u16* hd_info)
 }
 #endif
 
+/***
+ * @param[in] mask 状态掩码
+ * @param[in] val 等待值
+ * @param[in] timeout 超时时长
+ * @return
+ * 超时内端口读取到等待值：1\n
+ * 未读取到等待值：0
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE int waitfor(int mask, int val, int timeout)
 {
 	int t = get_ticks();
@@ -174,6 +202,10 @@ PRIVATE int waitfor(int mask, int val, int timeout)
 	return 0;
 }
 
+/***
+ * @param[in] device 主设备号
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void hd_open(int device)
 {
 	int drive = DRV_OF_DEV(device);
@@ -186,6 +218,11 @@ PRIVATE void hd_open(int device)
 	}
 }
 
+/***
+ * @param[in] device 设备号
+ * @param[in] style 分区类型
+ * @note 读取分区信息
+ ***/
 PRIVATE void partition(int device, int style)
 {
 	int drive = DRV_OF_DEV(device);
@@ -237,6 +274,12 @@ PRIVATE void partition(int device, int style)
 	}
 }
 
+/***
+ * @param[in] drive 设备号
+ * @param[in] sect_nr 扇区号
+ * @param[out] entry 分区表
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void get_part_table(int drive, int sect_nr, struct part_ent* entry)
 {
 	struct hd_cmd cmd;
@@ -253,6 +296,11 @@ PRIVATE void get_part_table(int drive, int sect_nr, struct part_ent* entry)
 	memcpy(entry, hd_buf + PARTITION_TABLE_OFFSET, sizeof(struct part_ent) * NR_PART_PER_DRIVE);
 }
 
+/***
+ * @param[in] hdi 硬盘分区信息
+ * @note <Ring1, PRIVATE, DEBUG>\n
+ * 打印硬盘分区信息
+ ***/
 #ifdef CL_DEBUG
 PRIVATE void print_hdinfo(struct hd_info* hdi)
 {
@@ -283,6 +331,9 @@ PRIVATE void print_hdinfo(struct hd_info* hdi)
 }
 #endif
 
+/***
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void hd_close(int device)
 {
 	int drive = DRV_OF_DEV(device);
@@ -290,6 +341,10 @@ PRIVATE void hd_close(int device)
 	hd_info[drive].open_cnt--;
 }
 
+/***
+ * @param[in] msg 信息
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void hd_rdwt(struct message* msg)
 {
 	int drive = DRV_OF_DEV(msg->DEVICE);
@@ -324,14 +379,19 @@ PRIVATE void hd_rdwt(struct message* msg)
 			if (!waitfor(STATUS_DRQ, STATUS_DRQ, HD_TIMEOUT))
 			{
 				panic("hd writing error.");
-				interrupt_wait();
 			}
+			port_write(REG_DATA, la, bytes);
+			interrupt_wait();
 		}
 		bytes_left -= SECTOR_SIZE;
 		la += SECTOR_SIZE;
 	}
 }
 
+/***
+ * @param[in] msg 信息
+ * @note <Ring1, PRIVATE>
+ ***/
 PRIVATE void hd_ioctl(struct message* msg)
 {
 	int device = msg->DEVICE;

@@ -1,12 +1,12 @@
 /***
  * @file i8259.c
  * @author Lhxl
- * @date 2024-12-28
+ * @date 2025-1-13
  * @version build30
  * @brief 8259A中断芯片设置
  ***/
 
-#include "../include/type.h"
+#include "../include/sys/type.h"
 #include "../include/sys/const.h"
 #include "../include/sys/protect.h"
 #include "../include/sys/proto.h"

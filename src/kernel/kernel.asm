@@ -1,3 +1,10 @@
+;;;
+ ; @file const.h
+ ; @author Lhxl
+ ; @date 2025-1-13
+ ; @version build30
+ ; @brief 常量定义
+ ;;;
 %include "../include/sys/sconst.inc"
 
 ; 导入函数
@@ -168,12 +175,12 @@ exception:
 ALIGN 16
 hwint00:
 	hwint_master 0
-; irq2：键盘中断
+; irq1：键盘中断
 ALIGN 16
 hwint01:
 	hwint_master 1
 ALIGN 16
-; 从
+; 从中断芯片
 hwint02:
 	hwint_master 2
 ALIGN 16

@@ -1,7 +1,7 @@
 /***
  * @file fs.h
  * @author Lhxl
- * @date 2024-12-29
+ * @date 2025-1-13
  * @version build30
  * @brief 文件系统
  ***/
@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_FS_H_
 #define _CANALOTUS_FS_H_
 
-#include "../type.h"
+#include "type.h"
 
 /***
  * @struct dev_drv_map
@@ -25,63 +25,66 @@ struct dev_drv_map
  * @brief 文件系统版本
  * @version 1.0
  ***/
-#define FILESYSTEM_VERSION_1	0x1
-#define FILESYSTEM_VERSION		FILESYSTEM_VERSION_1
+#define FS_V_0_0_1	0x1
+#define FILESYSTEM_VERSION		FS_V_0_0_1
 
 /***
- * @struct super_block
- * @brief 超级块
+ * @struct Canalotus_Filesystem
+ * @brief 文件系统信息
  * @note "~"标记为仅存在内存中的数据
  ***/
-struct super_block
+struct Canalotus_Filesystem
 {
-	u32 magic;					///< 魔数
-	u32 nr_inodes;				///< 总inode数量
-	u32 nr_sects;				///< 总扇区数量
-	u32 nr_imap_sects;			///< inode_map占用扇区数
-	u32 nr_smap_sects;			///< sector_map占用扇区数
-	u32 n_1st_sect;				///< 第一个数据扇区号
-	u32 nr_inode_sects;			///< inode扇区数
-	u32 root_inode;				///< 根目录的inode号
-	u32 inode_size;				///< inode大小
-	u32 inode_isize_offset;		///< struct inode::i_size的偏移
-	u32 inode_start_offset;		///< struct inode::i_start_sect的偏移
-	u32 dir_ent_size;			///< dir_entry的大小
-	u32 dir_ent_inode_offset;	///< struct dir_entry::inode_nr的偏移
-	u32 dir_ent_fname_offset;	///< struct dir_entry::name的偏移
+	u32 version;				///< 版本号
+	u32 nr_sectors;				///< 扇区数
+	u32 nr_sector_map;			///< sector_map数
+	u32 file_desc_size;			///< 文件描述符大小
+	u32 nr_file_desc;			///< 文件数
+	u32 sp_file_desc_sector;	///< 特殊文件描述符扇区号
+	u32 start_sector;			///< 文件起始扇区号
+	u32 unused1;				///< 未使用
+	u32 unused2;				///< 未使用
+	u32 unused3;				///< 未使用
+	u32 unused4;				///< 未使用
+	u32 unused5;				///< 未使用
+	u32 unused6;				///< 未使用
+	u32 unused7;				///< 未使用
+	u32 unused8;				///< 未使用
+	u32 unused9;				///< 未使用
 
-	int sb_dev;					///< ~存储超级块的设备
+	int sb_dev;						///< ~存储超级块的设备
 };
 
 /***
  * @def SUPER_BLOCK_SIZE
  * @brief 存储在硬盘中的超级块大小
  ***/
-#define SUPER_BLOCK_SIZE (sizeof(struct super_block) - sizeof(int))
+#define FILESYSTEM_SIZE (sizeof(struct Canalotus_Filesystem) - sizeof(int))
 
 /***
- * @struct inode
- * @brief i_node
+ * @struct file_desc
+ * @brief 文件描述符
  * @note "~"标记为仅存在内存中的数据
  ***/
-struct inode
+struct file_desc
 {
-	u32 i_type;			///< 文件类型
-	u32 i_size;			///< 文件大小
-	u32 i_start_sect;	///< 文件的第一个扇区号
-	u32 i_nr_sects;		///< 文件占用的扇区数
-	u8 _unused[16];		///< 用以数据对齐
+	char name[32];		///< 文件名
+	u32 type;			///< 文件类型
+	u32 size;			///< 文件大小
+	u32 start_sector;		///< 文件的第一个扇区号
+	u32 nr_sectors;		///< 文件占用的扇区数
+	//u32 _unused;		///< 未使用
 
-	int i_dev;			///< ~设备号
-	int i_cnt;			///< ~占用此文件的进程数
-	int i_num;			///< ~inode号
+	int dev;			///< ~设备号
+	int cnt;			///< ~占用此文件的进程数
+	int num;			///< ~file_desc号
 };
 
 /***
- * @def INODE_SIZE
- * @brief 存储在硬盘中的inode大小
+ * @def FILE_DESC_SIZE
+ * @brief 存储在硬盘中的file_desc大小
  ***/
-#define INODE_SIZE (sizeof(struct inode) - sizeof(int) * 3)
+#define FILE_DESC_SIZE (sizeof(struct file_desc) - sizeof(int) * 3)
 
 /***
  * @def MAX_FILENAME_SIZE
@@ -95,7 +98,7 @@ struct inode
  ***/
 struct dir_entry
 {
-	int inode_nr;					///< inode号
+	int file_desc_nr;				///< file_desc号
 	char name[MAX_FILENAME_SIZE];	///< 文件名称
 };
 
@@ -124,11 +127,11 @@ struct dir_entry
  * @struct file_desc
  * @brief 文件描述符
  ***/
-struct file_desc
+struct file_occupy_desc
 {
 	int fs_mode;				///< 读写模式
 	int fs_pos;					///< 当前操作位置
-	struct inode* fd_inode;		///< inode指针
+	struct file_desc* fd;		///< inode指针
 };
 
 

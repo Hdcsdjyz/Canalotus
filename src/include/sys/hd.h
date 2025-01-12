@@ -1,7 +1,7 @@
 /***
  * @file hd.h
  * @author Lhxl
- * @date 2024-12-28
+ * @date 2025-1-13
  * @version build30
  * @brief 硬盘
  ***/
@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_HD_H_
 #define _CANALOTUS_HD_H_
 
-#include "../type.h"
+#include "type.h"
 #include "const.h"
 
 /***
@@ -22,7 +22,7 @@ struct part_ent
 	u8 start_head;			///< 开始磁头
 	u8 start_sector;		///< 0~5：开始扇区 6~7：开始柱道8~9
 	u8 start_cylinder;		///< 开始柱道0~7
-	u8 sys_id;				///< 系统id(01:FAT12, 83:Linux, )
+	u8 sys_id;				///< 系统id(此系统：0xB0)
 	u8 end_head;			///< 结束磁头
 	u8 end_sector;			///< 结束扇区，同上
 	u8 end_cylinder;		///< 结束柱道，同上

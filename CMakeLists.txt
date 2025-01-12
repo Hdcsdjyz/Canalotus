@@ -33,7 +33,7 @@ add_executable(kernel src/kernel/kernel.asm
         src/include/sys/sconst.inc
         src/include/string.h
         src/include/sys/tty.h
-        src/include/type.h
+        src/include/sys/type.h
         src/include/sys/hd.h
         src/include/sys/config.h
         src/include/sys/fs.h

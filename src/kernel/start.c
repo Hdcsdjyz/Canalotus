@@ -1,12 +1,12 @@
 /***
  * @file start.c
  * @author Lhxl
- * @date 2024-12-28
+ * @date 2025-1-13
  * @version build30
  * @brief 初始化内核
  ***/
 
-#include "../include/type.h"
+#include "../include/sys/type.h"
 #include "../include/sys/const.h"
 #include "../include/sys/protect.h"
 #include "../include/sys/proto.h"

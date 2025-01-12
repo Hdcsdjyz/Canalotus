@@ -1,8 +1,8 @@
 /***
  * @file type.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2025-1-13
+ * @version build30
  * @brief 类型别名
  ***/
 
@@ -51,7 +51,7 @@ struct msg3
 struct message
 {
 	int source;
-	int type;
+	u16 type;
 	union
 	{
 		struct msg1 m1;

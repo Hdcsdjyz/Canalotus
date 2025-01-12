@@ -1,7 +1,7 @@
 /***
  * @file proto.h
  * @author Lhxl
- * @date 2024-12-28
+ * @date 2025-1-13
  * @version build30
  * @brief 全局函数声明
  ***/
@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_PROTO_H_
 #define _CANALOTUS_PROTO_H_
 
-#include "../type.h"
+#include "type.h"
 #include "const.h"
 #include "tty.h"
 #include "proc.h"

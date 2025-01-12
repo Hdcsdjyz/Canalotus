@@ -1,7 +1,7 @@
 /***
  * @file global.h
  * @author Lhxl
- * @date 2024-12-28
+ * @date 2025-1-13
  * @version build30
  * @brief 全局变量定义
  ***/
@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_GLOBAL_H
 #define _CANALOTUS_GLOBAL_H
 
-#include "../type.h"
+#include "type.h"
 #include "const.h"
 #include "protect.h"
 #include "proc.h"

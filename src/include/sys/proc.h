@@ -1,7 +1,7 @@
 /***
  * @file proc.h
  * @author Lhxl
- * @date 2024-12-29
+ * @date 2025-1-13
  * @version build30
  * @brief 进程相关定义
  ***/
@@ -9,7 +9,7 @@
 #ifndef _CANALOTUS_PROC_H_
 #define _CANALOTUS_PROC_H_
 
-#include "../type.h"
+#include "type.h"
 #include "const.h"
 #include "protect.h"
 
