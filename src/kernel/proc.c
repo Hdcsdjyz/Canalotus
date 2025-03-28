@@ -1,17 +1,19 @@
 /***
  * @file proc.c
  * @author Lhxl
- * @date 2024-12-27
- * @version build29
+ * @date 2024-12-28
+ * @version build30
  * @brief 进程调度
  ***/
 
-#include "../include/config.h"
-#include "../include/const.h"
-#include "../include/proto.h"
-#include "../include/global.h"
+#include "../include/sys/config.h"
+#include "../include/sys/const.h"
+#include "../include/sys/proto.h"
+#include "../include/sys/global.h"
 #include "../include/string.h"
-#include "../include/color.h"
+#include "../include/sys/color.h"
+#include "../include/stdio.h"
+#include "../include/assert.h"
 
 PRIVATE void block(struct process* p_proc);
 PRIVATE void unblock(struct process* p_proc);

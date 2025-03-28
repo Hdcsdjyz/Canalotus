@@ -1,13 +1,14 @@
 /***
  * @file misc.c
  * @author Lhxl
- * @date 2024-12-26
- * @version build27
+ * @date 2025-1-13
+ * @version build30
  * @brief misc
  ***/
 
-#include "../include/const.h"
-#include "../include/proto.h"
+#include "../include/sys/const.h"
+#include "../include/sys/proto.h"
+#include "../include/stdio.h"
 
 PUBLIC void assertion_failure(char* exp, char* file, int line)
 {

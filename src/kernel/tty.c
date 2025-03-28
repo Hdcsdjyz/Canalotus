@@ -1,17 +1,18 @@
 /***
  * @file tty.c
  * @author Lhxl
- * @data 2024-12-22
- * @version build26
+ * @data 2024-12-28
+ * @version build30
  * @brief 终端
  ***/
 
-#include "../include/const.h"
-#include "../include/proto.h"
-#include "../include/keyboard.h"
-#include "../include/tty.h"
-#include "../include/global.h"
-#include "../include/color.h"
+#include "../include/sys/const.h"
+#include "../include/sys/proto.h"
+#include "../include/sys/keyboard.h"
+#include "../include/sys/tty.h"
+#include "../include/sys/global.h"
+#include "../include/sys/color.h"
+#include "../include/assert.h"
 
 #define TTY_FIRST	(tty_table)
 #define TTY_END		(tty_table + NR_CONSOLES)
@@ -90,23 +91,6 @@ PUBLIC void in_process(struct tty* p_tty, u16 key)
 			break;
 		}
 	}
-}
-
-PUBLIC void tty_write(struct tty* p_tty, char* buf, int len)
-{
-	char* p = buf;
-	int i = len;
-	while (i)
-	{
-		out_char(p_tty->p_console, *p++);
-		i--;
-	}
-}
-
-PUBLIC int syscall_write(char* buf, int len, struct process* p_proc)
-{
-	tty_write(&tty_table[p_proc->nr_tty], buf, len);
-	return 0;
 }
 
 PUBLIC int syscall_printx(int _unused1, int _unused2, char* s, struct process* p_proc)

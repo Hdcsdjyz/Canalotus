@@ -1,16 +1,16 @@
 /***
  * @file i8259.c
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-28
+ * @version build30
  * @brief 8259A中断芯片设置
  ***/
 
 #include "../include/type.h"
-#include "../include/const.h"
-#include "../include/protect.h"
-#include "../include/proto.h"
-#include "../include/global.h"
+#include "../include/sys/const.h"
+#include "../include/sys/protect.h"
+#include "../include/sys/proto.h"
+#include "../include/sys/global.h"
 
 /* 初始化8259A */
 PUBLIC void init_8259A()

@@ -1,3 +1,4 @@
+--参考(https://github.com/yyu/OrangeS)--  
 build1　 建立boot  
 build2　 建立Makefile  
 build3　 建立loader  
@@ -24,10 +25,14 @@ build22　区分进程权限级（目前分为三级：kernel、system、user）
 build23　修复bug：process中ticks类型错误导致每个进程占用时间意外的长  
 　　　　 优化代码  
 build24　实现printf  
-　　　　 修复bug：向控制台打印字符时会跳转到此控制台  
+　　　　 修复bug：向控制台打印字符时会跳转到对应控制台  
 build25　采用微内核实现进程间通信并由此重构原有系统调用  
 　　　　 调整文件结构  
 build26　实现硬盘信息的读取  
 build27　实现硬盘上的文件系统CLFS（0xB0）  
 build28　完善硬盘驱动  
-build29　建立文件系统
+build29　建立文件系统  
+build30　调节文件结构  
+　　　　 使用更简单的文件系统  
+　　　　 修复bug：硬盘驱动中错误的中断相关行为  
+build31　mkfs

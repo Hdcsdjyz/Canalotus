@@ -1,17 +1,21 @@
 /***
  * @file main.c
  * @author Lhxl
- * @date 2024-12-27
- * @version build29
+ * @date 2025-3-27
+ * @version build31
  * @brief 文件系统
  ***/
 
-#include "../include/config.h"
-#include "../include/const.h"
-#include "../include/proto.h"
-#include "../include/global.h"
-#include "../include/hd.h"
+#include "../include/sys/config.h"
+#include "../include/sys/const.h"
+#include "../include/sys/proto.h"
+#include "../include/sys/global.h"
+#include "../include/sys/hd.h"
+#include "../include/sys/type.h"
 #include "../include/string.h"
+#include "../include/assert.h"
+#include "../include/stdio.h"
+#include "../include/sys/fs.h"
 
 PRIVATE void init_fs();
 PRIVATE void mkfs();
@@ -79,89 +83,37 @@ PRIVATE void mkfs()
 #ifdef CL_DEBUG
 	printf("dev size: 0x%x sectors\n", geo.size);
 #endif
-	/* super_block */
-	struct super_block sb;
-	int bits_per_sect = SECTOR_SIZE * 8;
-	sb.magic = FILESYSTEM_VERSION_1;
-	sb.nr_inodes = bits_per_sect;
-	sb.nr_inode_sects = sb.nr_inodes * INODE_SIZE;
-	sb.nr_sects = geo.size;
-	sb.nr_imap_sects = 1;
-	sb.nr_smap_sects = sb.nr_sects;
-	sb.n_1st_sect = 1 + 1 + sb.nr_imap_sects + sb.nr_smap_sects;
-	sb.root_inode = ROOT_INODE;
-	sb.inode_size = INODE_SIZE;
-	struct inode x;
-	sb.inode_isize_offset = (int)&x.i_size - (int)&x;
-	sb.inode_start_offset = (int)&x.i_start_sect - (int)&x;
-	sb.dir_ent_size = DIR_ENTRY_SIZE;
-	struct dir_entry de;
-	sb.dir_ent_inode_offset = (int)&de.inode_nr - (int)&de;
-	sb.dir_ent_fname_offset = (int)&de.name - (int)&de;
-	memset(fsbuf, 0x90, SECTOR_SIZE);
-	memcpy(fsbuf, &sb, SUPER_BLOCK_SIZE);
+
+	/* filesystem */
+	memset(fsbuf, 0, CLUSTER_SIZE);
+	struct Filesystem fs;
+	fs.version = FILESYSTEM_VERSION;
+	fs.nr_sectors = geo.size;
+	fs.nr_clusters = geo.size / 8;
+	fs.nr_cluster_map = fs.nr_clusters / 8 / 512 / 8;
+	fs.nr_file_desc = 1;
+	fs.file_table_cluster[0] = 1 + 1 + fs.nr_cluster_map;
+	fs.start_cluster = 1 + 1 + fs.nr_cluster_map + 1;
+	fs.dev = 0;
+	memcpy(fsbuf, &fs, FILESYSTEM_SIZE);
 	WRITE_SECT(ROOT_DEV, 1);
-#ifdef CL_DEBUG
-	printf("devbase:0x%x00, sb:0x%x00, imap:0x%x00, smap:0x%x00\n"
-		"        inodes:0x%x00, 1st_sector:0x%x00\n",
-		geo.base * 2,
-		(geo.base + 1) * 2,
-		(geo.base + 2) * 2,
-		(geo.base + 2 + sb.nr_imap_sects) * 2,
-		(geo.base + 2 + sb.nr_imap_sects + sb.nr_smap_sects) * 2,
-		(geo.base + sb.n_1st_sect) * 2);
-#endif printf
-	/* inode_map */
-	memset(fsbuf, 0, SECTOR_SIZE);
-	for (int i = 0; i < NR_CONSOLES + 2; i++)
+
+	/* cluster_map */
+	memset(fsbuf, 0, CLUSTER_SIZE);
+	for (int i = 2; i < fs.nr_cluster_map; i++)
 	{
-		fsbuf[0] |= 1 << i;
+		WRITE_SECT(ROOT_DEV, i);
 	}
-	assert(fsbuf[0] == 0x1F);
+	struct Cluster_map cmap;
+	memset(&cmap, 0, CLUSTER_SIZE);
+	for (int i = 0; i < 1 + 1 + fs.nr_cluster_map + 1; i++)
+	{
+		cmap.cluster[i] = TRUE;
+	}
+	memcpy(fsbuf, &cmap, CLUSTER_SIZE);
 	WRITE_SECT(ROOT_DEV, 2);
-	/* sector_map */
-	memset(fsbuf, 0, SECTOR_SIZE);
-	int nr_sects = NR_DEFAULT_FILE_SECTS + 1;
-	for (int i = 0; i < nr_sects / 8; i++)
-	{
-		fsbuf[i] = 0xFF;
-	}
-	for (int j = 0; j < nr_sects % 8; j++)
-	{
-		fsbuf[nr_sects / 8 - 1] |= 1 << j;
-	}
-	WRITE_SECT(ROOT_DEV, 2 + sb.nr_imap_sects);
-	memset(fsbuf, 0, SECTOR_SIZE);
-	for (int i = 1; i < sb.nr_smap_sects; i++)
-	{
-		WRITE_SECT(ROOT_DEV, 2 + sb.nr_imap_sects + i);
-	}
-	/* inodes */
-	memset(fsbuf, 0, SECTOR_SIZE);
-	struct inode* p_inode = (struct inode*)fsbuf;
-	p_inode->i_type = I_DIRECTORY;
-	p_inode->i_size = DIR_ENTRY_SIZE * 4;
-	p_inode->i_start_sect = sb.n_1st_sect;
-	p_inode->i_nr_sects = NR_DEFAULT_FILE_SECTS;
-	for (int i = 0; i < NR_CONSOLES; i++)
-	{
-		p_inode = (struct inode*)(fsbuf + INODE_SIZE * (i + 1));
-		p_inode->i_type = I_CHAR_SPECIAL;
-		p_inode->i_size = 0;
-		p_inode->i_start_sect = MAKE_DEV(DEV_CHAR_TTY, i);
-		p_inode->i_nr_sects = 0;
-	}
-	WRITE_SECT(ROOT_DEV, 2 + sb.nr_imap_sects + sb.nr_smap_sects);
-	/* "/" */
-	memset(fsbuf, 0, SECTOR_SIZE);
-	struct dir_entry* p_de = (struct dir_entry*)fsbuf;
-	p_de->inode_nr = 1;
-	strcpy(p_de->name, "/");
-	for (int i = 0; i < NR_CONSOLES; i++)
-	{
-		p_de++;
-		p_de->inode_nr = i + 2;
-		sprintf(p_de->name, "dev_tty%d", i);
-	}
-	WRITE_SECT(ROOT_DEV, sb.n_1st_sect);
+
+	/* FileTable */
+	memset(fsbuf, 0, CLUSTER_SIZE);
+	WRITE_SECT(ROOT_DEV, fs.file_table_cluster[0]);
 }

@@ -1,15 +1,15 @@
 /***
  * @file keymap.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-28
+ * @version build30
  * @brief 键盘按键映射
  ***/
 
 #ifndef _CANALOTUS_KEYMAP_H_
 #define _CANALOTUS_KEYMAP_H_
 
-#include "type.h"
+#include "../type.h"
 #include "keyboard.h"
 
 u16 keymap[NR_SCAN_CODES * MAP_COLS] = {
@@ -143,6 +143,5 @@ u16 keymap[NR_SCAN_CODES * MAP_COLS] = {
 /* 0x7E - ???      */    0,				0,				0,
 /* 0x7F - ???      */    0,				0,				0
 };
-
 
 #endif

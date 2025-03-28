@@ -1,15 +1,15 @@
 /***
  * @file hd.h
  * @author Lhxl
- * @date 2024-12-26
- * @version build27
+ * @date 2024-12-28
+ * @version build30
  * @brief 硬盘
  ***/
 
 #ifndef _CANALOTUS_HD_H_
 #define _CANALOTUS_HD_H_
 
-#include "type.h"
+#include "../type.h"
 #include "const.h"
 
 /***

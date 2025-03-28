@@ -3,8 +3,9 @@ project(Canalotus ASM C)
 
 enable_language(ASM C)
 
-set(CMAKE_ASM_NASM_COMPILER "usr/bin/nasm")
+set(CMAKE_ASM_NASM_COMPILER "/usr/bin/nasm")
 set(CMAKE_ASM_NASM_FLAGS "-o boot/$(SOURCE_NAME)")
+set(CMAKE_C_COMPILER "/usr/bin/gcc")
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_FLAGS "-c -nostdlib")
 
@@ -21,22 +22,24 @@ add_executable(loader src/boot/loader.asm
 )
 
 add_executable(kernel src/kernel/kernel.asm
-        src/include/color.h
-        src/include/console.h
-        src/include/const.h
-        src/include/global.h
-        src/include/keyboard.h
-        src/include/keymap.h
-        src/include/proc.h
-        src/include/protect.h
-        src/include/proto.h
-        src/include/sconst.inc
+        src/include/sys/color.h
+        src/include/sys/console.h
+        src/include/sys/const.h
+        src/include/sys/global.h
+        src/include/sys/keyboard.h
+        src/include/sys/keymap.h
+        src/include/sys/proc.h
+        src/include/sys/protect.h
+        src/include/sys/proto.h
+        src/include/sys/sconst.inc
         src/include/string.h
-        src/include/tty.h
-        src/include/type.h
-        src/include/hd.h
-        src/include/config.h
-        src/include/fs.h
+        src/include/sys/tty.h
+        src/include/sys/type.h
+        src/include/sys/hd.h
+        src/include/sys/config.h
+        src/include/sys/fs.h
+        src/include/stdio.h
+        src/include/assert.h
 )
 
 add_library(start.o OBJECT src/kernel/start.c)
@@ -50,8 +53,8 @@ add_library(proc.o OBJECT src/kernel/proc.c)
 add_library(keyboard.o OBJECT src/kernel/keyboard.c)
 add_library(tty.o OBJECT src/kernel/tty.c)
 add_library(console.o OBJECT src/kernel/console.c)
-add_library(printf.o OBJECT src/kernel/printf.c)
-add_library(vsprintf.o OBJECT src/kernel/vsprintf.c)
+add_library(printf.o OBJECT src/lib/printf.c)
+add_library(vsprintf.o OBJECT src/lib/vsprintf.c)
 add_library(sys.o OBJECT src/kernel/sys.c)
 add_library(hd.o OBJECT src/kernel/hd.c)
 add_library(kliba.o OBJECT src/lib/kliba.asm)

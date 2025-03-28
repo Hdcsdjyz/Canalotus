@@ -1,13 +1,13 @@
 /***
  * @file klib.c
  * @author Lhxl
- * @date 2024-12-26
- * @version build27
+ * @date 2024-12-28
+ * @version build30
  * @brief klib
  ***/
 
-#include "../include/const.h"
-#include "../include/proto.h"
+#include "../include/sys/const.h"
+#include "../include/sys/proto.h"
 
 PUBLIC char* itoa(char* str, int num)
 {

@@ -1,15 +1,17 @@
 /***
  * @file global.c
  * @author Lhxl
- * @date 2024-12-26
- * @version build27
+ * @date 2025-3-27
+ * @version build31
  * @brief 全局数组定义
  ***/
 
 #define GLOBAL_VAR_HERE
 
-#include "../include/global.h"
-#include "../include/proto.h"
+#include "../include/sys/global.h"
+#include "../include/sys/proto.h"
+#include "../include/sys/type.h"
+#include "../include/sys/proto.h"
 
 /* 进程 */
 PUBLIC struct process proc_table[NR_SYSU_PROCS + NR_USER_PROCS];

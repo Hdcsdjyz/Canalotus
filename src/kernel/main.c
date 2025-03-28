@@ -1,16 +1,17 @@
 /***
  * @file keyboard.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-28
+ * @version build30
  * @brief 内核主程序
  ***/
 
-#include "../include/proto.h"
-#include "../include/proc.h"
-#include "../include/global.h"
+#include "../include/sys/proto.h"
+#include "../include/sys/proc.h"
+#include "../include/sys/global.h"
 #include "../include/string.h"
-#include "../include/color.h"
+#include "../include/stdio.h"
+#include "../include/sys/color.h"
 
 PUBLIC int kernel_main()
 {

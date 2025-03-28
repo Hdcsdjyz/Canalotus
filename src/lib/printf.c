@@ -1,13 +1,14 @@
 /***
  * @file printf.c
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-28
+ * @version build30
  * @brief printf
  ***/
 
 #include "../include/type.h"
-#include "../include/proto.h"
+#include "../include/sys/proto.h"
+#include "../include/stdio.h"
 
 int printf(const char* fmt, ...)
 {

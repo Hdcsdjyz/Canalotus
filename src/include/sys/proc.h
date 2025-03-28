@@ -1,15 +1,16 @@
 /***
  * @file proc.h
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2024-12-29
+ * @version build30
  * @brief 进程相关定义
  ***/
 
 #ifndef _CANALOTUS_PROC_H_
 #define _CANALOTUS_PROC_H_
 
-#include "type.h"
+#include "../type.h"
+#include "const.h"
 #include "protect.h"
 
 /***
@@ -59,11 +60,12 @@ struct process
 	struct process* q_sending;			///< 等待发送信息至此进程的进程
 	struct process* next_sending;		///< 下一个将要发送消息至的进程
 	u8 nr_tty;							///< 控制台号
+	struct file_desc* filp[NR_FILES];	///< 打开的文件列表
 };
 
 /***
  * @struct task
- * @brief 进程
+ * @brief 进程注册信息
  ***/
 struct task
 {

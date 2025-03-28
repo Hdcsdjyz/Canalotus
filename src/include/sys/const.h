@@ -1,8 +1,8 @@
 /***
  * @file const.h
  * @author Lhxl
- * @date 2024-12-27
- * @version build29
+ * @date 2025-3-27
+ * @version build31
  * @brief 常量定义
  ***/
 
@@ -10,7 +10,6 @@
 #define _CANALOTUS_CONST_H_
 
 #include "protect.h"
-#include "proc.h"
 #include "config.h"
 
 
@@ -90,15 +89,6 @@
 /* 终端 */
 #define NR_CONSOLES 3
 
-/* assert */
-#define ASSERT
-#ifdef ASSERT
-void assertion_failure(char* exp, char* file, int line);
-#define assert(exp) if(exp); else assertion_failure(#exp, __FILE__, __LINE__)
-#else
-#define assert(exp)
-#endif
-
 #define MAG_CH_PANIC	'\002'
 #define MAG_CH_ASSERT	'\003'
 
@@ -125,13 +115,8 @@ void assertion_failure(char* exp, char* file, int line);
  ***/
 enum msgtype
 {
-	HARD_INT = 1,
-	GET_TICKS,
-	DEV_OPEN = 1001,
-	DEV_CLOSE,
-	DEV_READ,
-	DEV_WRITE,
-	DEV_IOCTL
+	HARD_INT, GET_TICKS,
+	DEV_OPEN, DEV_CLOSE, DEV_READ, DEV_WRITE, DEV_IOCTL
 };
 #define RETVAL		u.m3.m3i1
 #define CNT			u.m3.m3i2
@@ -145,6 +130,7 @@ enum msgtype
 /* 硬盘 */
 #define DIOCTL_GET_GEO		1
 #define SECTOR_SIZE			512
+#define CLUSTER_SIZE		SECTOR_SIZE * 8
 #define SECTOR_SIZE_SHIFT	9
 /* 硬件类型 */
 #define NO_DEV			0
@@ -159,6 +145,7 @@ enum msgtype
 #define MAJOR(x)		((x >> MAJOR_SHIFT) & 0xFF)
 #define MINOR(x)		(x & 0xFF)
 /* 硬盘结构 */
+#define MINOR_hd1		0x01
 #define MINOR_hd1a		0x10
 #define MINOR_hd2a		(MINOR_hd1a + NR_SUB_PER_PART)
 /* 目录结构 */
@@ -185,16 +172,13 @@ enum msgtype
 #define NR_FILE_DESC	64
 #define NR_INODE		64
 #define NR_SUPER		8
+/* 文件类型 */
+#define NO_FILE			0x0
+#define INVALID_FILE	0x1
+#define FILE_TABLE		0x2
+#define DIRECTORY		0x3
+#define TEXT			0x4
 
-#define I_TYPE_MASK			0170000
-#define I_REGULAR			0100000
-#define I_BLOCK_SPECIAL		0060000
-#define I_DIRECTORY			0040000
-#define I_CHAR_SPECIAL		0020000
-#define I_NAMED_PIPE		0010000
-
-#define IS_SPECIAL(m)	((((m) & I_TYPE_MASK) == I_BLOCK_SPECIAL) || (((m) &I_TYPE_MASK) == I_CHAR_SPECIAL))
-
-#define NR_DEFAULT_FILE_SECTS	2048
+#define NR_DEFAULT_FILE_SECTS	1024
 
 #endif

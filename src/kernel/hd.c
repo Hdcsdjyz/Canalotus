@@ -1,15 +1,17 @@
 /***
  * @file hd.c
  * @author Lhxl
- * @date 2024-12-27
- * @version build29
+ * @date 2024-12-28
+ * @version build39
  * @brief 硬盘驱动
  ***/
 
-#include "../include/const.h"
-#include "../include/proto.h"
-#include "../include/hd.h"
+#include "../include/sys/const.h"
+#include "../include/sys/proto.h"
+#include "../include/sys/hd.h"
 #include "../include/string.h"
+#include "../include/stdio.h"
+#include "../include/assert.h"
 
 PRIVATE void init_hd();
 PRIVATE void hd_identify(int drive);

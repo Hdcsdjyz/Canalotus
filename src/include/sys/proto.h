@@ -1,15 +1,15 @@
 /***
  * @file proto.h
  * @author Lhxl
- * @date 2024-12-27
- * @version build29
+ * @date 2024-12-28
+ * @version build30
  * @brief 全局函数声明
  ***/
 
 #ifndef _CANALOTUS_PROTO_H_
 #define _CANALOTUS_PROTO_H_
 
-#include "type.h"
+#include "../type.h"
 #include "const.h"
 #include "tty.h"
 #include "proc.h"
@@ -66,8 +66,6 @@ PUBLIC void keyboard_read(struct tty* p_tty);
 /* kernel/tty.c */
 PUBLIC void sys_tty();
 PUBLIC void in_process(struct tty* p_tty, u16 key);
-PUBLIC void tty_write(struct tty* p_tty, char* buf, int len);
-PUBLIC int syscall_write(char* buf, int len, struct process* p_proc);
 PUBLIC int syscall_printx(int _unused1, int _unused2, char* s, struct process* p_proc);
 
 /* kernel/console.c */
@@ -76,13 +74,6 @@ PUBLIC void init_screen(struct tty* p_tty);
 PUBLIC void select_console(u8 nr_console);
 PUBLIC u8 is_current_console(struct console* p_console);
 PUBLIC void scroll_screen(struct console* p_console, char direction);
-
-/* kernel/vsprintf.c */
-int vsprintf(char* buf, const char* format, va_list args);
-int sprintf(char* buf, const char* fmt, ...);
-
-/* kernel/printf.c */
-int printf(const char* format, ...);
 
 /* kernel/sys.c */
 PUBLIC void sys_sys();
@@ -108,7 +99,6 @@ PUBLIC char* itoa(char* str, int num);
 PUBLIC void disp_int(int input);
 
 /* lib/misc.c */
-PUBLIC void assertion_failure(char* exp, char* file, int line);
 PUBLIC void spin(char* func_name);
 
 /* fs/main.c */

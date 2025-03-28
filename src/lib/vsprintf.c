@@ -1,13 +1,13 @@
 /***
  * @file vsprintf.c
  * @author Lhxl
- * @date 2024-12-21
- * @version build26
+ * @date 2025-1-13
+ * @version build30
  * @brief vsprintf
  ***/
 
-#include "../include/type.h"
-#include "../include/proto.h"
+#include "../include/sys/type.h"
+#include "../include/stdio.h"
 #include "../include/string.h"
 
 PRIVATE char* i2a(int val, int base, char** ps);
